@@ -1,80 +1,94 @@
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 const TopProducts = () => {
+  const TopProduct = [
+    {
+      ProductName: "Wireless Ergonomic Mouse",
+      Category: "Electronics",
+      Stock: 150,
+      Price: "$49.99",
+    },
+    {
+      ProductName: "Noise-Cancelling deadphones",
+      Category: "Electronics",
+      Stock: 75,
+      Price: "$199.99",
+    },
+    {
+      ProductName: "Organic Coffee Beans",
+      Category: "Groceries",
+      Stock: 200,
+      Price: "$18.50",
+    },
+    {
+      ProductName: "Smart Home Security Camera",
+      Category: "Smart Home",
+      Stock: 90,
+      Price: "$120.00",
+    },
+    {
+      ProductName: "Stainless Steel Wate Bottle",
+      Category: "Home Goods",
+      Stock: 300,
+      Price: "$25.00",
+    },
+  ];
+  const getCategoryColor = (Category) => {
+    switch (Category) {
+      case "Electronics":
+        return "border";
+      case "Groceries":
+        return "border";
+      case "Smart Home":
+        return "border";
+      case "Home Goods":
+        return "border";
+      default:
+        break;
+    }
+  };
   return (
-    <div className="font-semibold">
-      {/* العنوان */}
-      <h1 className="mx-5 md:mx-36 text-xl font-semibold mt-20 mb-5">
+    <div className="font-semibold bg-white rounded-lg shadow-sm mx-5 p-5 ">
+      <h1 className="text-lg sm:text-xl md:text-2xl font-semibold mb-5">
         Top Products
       </h1>
-      <hr className="mx-5 md:mx-32" />
-
-      {/* الجدول */}
-      <div className="mx-5 md:mx-32 mt-6 grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 gap-5 text-center bg-white p-5 rounded-lg shadow-sm ">
-
-        {/* Product Name */}
-        <div className="bg-gray-50 rounded-lg p-3 w-[100px] mx-auto">
-          <h2 className="text-gray-500 mb-7 text-sm whitespace-nowrap">Product Name</h2>
-          <div className="mb-10">ORD001</div>
-          <div className="mb-10">ORD002</div>
-          <div className="mb-10">ORD003</div>
-          <div className="mb-10">ORD004</div>
-          <div className="mb-10">ORD005</div>
-        </div>
-
-        {/* Category / Status */}
-        <div className="bg-gray-50 rounded-lg p-3 w-[120px] mx-auto">
-          <h2 className="text-gray-500 mb-7 text-sm">Category</h2>
-          <div className="bg-white rounded-full px-3 text-black mb-10 text-center border text-xs font-semibold">
-            Electronics
-          </div>
-          <div className="bg-white rounded-full px-3 text-black mb-12 text-center border text-xs font-semibold">
-            Electronics
-          </div>
-          <div className="bg-white rounded-full px-3 text-black mb-12 text-center border text-xs font-semibold">
-            Groceries
-          </div>
-          <div className="bg-white rounded-full px-3 text-black mb-12 text-center border text-xs font-semibold">
-            Smart Home
-          </div>
-          <div className="bg-white rounded-full px-3 text-black mb-12 text-center border text-xs font-semibold whitespace-nowrap">
-            Home Goods
-          </div>
-        </div>
-
-        {/* Stock */}
-        <div className="bg-gray-50 rounded-lg p-3 w-[100px] mx-auto">
-          <h2 className="text-gray-500 mb-7 text-sm">Stock</h2>
-          <div className="mb-10">150</div>
-          <div className="mb-10">75</div>
-          <div className="mb-10">200</div>
-          <div className="mb-10">90</div>
-          <div className="mb-10">300</div>
-        </div>
-
-        {/* Price */}
-        <div className="bg-gray-50 rounded-lg p-3 w-[100px] mx-auto">
-          <h2 className="text-gray-500 mb-7 text-sm">Price</h2>
-          <div className="mb-10">$250.00</div>
-          <div className="mb-10">$120.50</div>
-          <div className="mb-10">$50.00</div>
-          <div className="mb-10">$75.25</div>
-          <div className="mb-10">$300.00</div>
-        </div>
-
-        {/* Actions */}
-        <div className="bg-gray-50 rounded-lg p-3 w-[80px] mx-auto">
-          <h2 className="text-gray-500 mb-7 text-sm">Actions</h2>
-          <div className="mb-12 flex justify-center"><BsThreeDotsVertical /></div>
-          <div className="mb-12 flex justify-center"><BsThreeDotsVertical /></div>
-          <div className="mb-12 flex justify-center"><BsThreeDotsVertical /></div>
-          <div className="mb-12 flex justify-center"><BsThreeDotsVertical /></div>
-          <div className="mb-12 flex justify-center"><BsThreeDotsVertical /></div>
-        </div>
-      </div>
-
-      <hr className="mx-5 md:mx-32 mt-5 mb-10" />
+      <hr className="mb-5" />
+      <table className="w-full text-center text-xs sm:text-sm md:text-base table-fixed">
+        <thead className="bg-gray-100 text-gray-600 uppercase">
+          <tr>
+            <th className="py-2 px-1 sm:py-3 sm:px-2  ">Product Name</th>
+            <th className="py-2 px-1 sm:py-3 sm:px-2">Category</th>
+            <th className="py-2 px-1 sm:py-3 sm:px-2">Stock</th>
+            <th className="py-2 px-1 sm:py-3 sm:px-2">Price</th>
+            <th className="py-2 px-1 sm:py-3 sm:px-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200">
+          {TopProduct.map((topProducts, index) => (
+            <tr key={index} className="hover:bg-gray-50 transition">
+              <td className="py-2 px-1 sm:py-3 sm:px-2 ">{topProducts.ProductName}</td>
+              <td className="py-2 px-1 sm:py-3 sm:px-2">
+                <span
+                  className={`${getCategoryColor(
+                    topProducts.Category
+                  )} text-black px-2 py-1 rounded-full text-[10px] sm:text-xs`}
+                >
+                  {topProducts.Category}
+                </span>
+              </td>
+              <td className="py-2 px-1 sm:py-3 sm:px-2">{topProducts.Stock}</td>
+              <td className="py-2 px-1 sm:py-3 sm:px-2">{topProducts.Price}</td>
+              <td className="py-2 px-1 sm:py-3 sm:px-2 flex justify-center">
+                <BsThreeDotsVertical className="text-gray-600 cursor-pointer hover:text-gray-900 text-sm sm:text-base" />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <hr className="mt-6" />
     </div>
+
+    
   );
 };
 

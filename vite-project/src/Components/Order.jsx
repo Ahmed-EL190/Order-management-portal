@@ -1,77 +1,73 @@
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 const Order = () => {
+  const orders = [
+    { id: "ORD001", customer: "Alice", stock: 150, price: "$250.00", status: "Delivered" },
+    { id: "ORD002", customer: "Bob", stock: 75, price: "$120.50", status: "Pending" },
+    { id: "ORD003", customer: "Charlie", stock: 200, price: "$50.00", status: "Delivered" },
+    { id: "ORD004", customer: "Diana", stock: 90, price: "$75.25", status: "Failed" },
+    { id: "ORD005", customer: "Eve", stock: 300, price: "$300.00", status: "Delivered" },
+  ];
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Delivered":
+        return "bg-blue-600";
+      case "Pending":
+        return "bg-green-600";
+      case "Failed":
+        return "bg-red-600";
+      default:
+        return "bg-gray-500";
+    }
+  };
+
   return (
-    <div className="font-semibold">
-      <h1 className="mx-5 md:mx-36 text-xl font-semibold mb-5">Recent Orders</h1>
-      <hr className="mx-5 md:mx-32" />
+    <div className="font-semibold bg-white rounded-lg shadow-sm mx-5 p-5">
+  <h1 className="text-lg sm:text-xl md:text-2xl font-semibold mb-5">Recent Orders</h1>
+  <hr className="mb-5" />
 
-      {/* Container */}
-      <div className="mx-5 md:mx-32 mt-6 grid grid-cols-3 sm:grid-cols-4 mdl:grid-cols-6 gap-10 text-center bg-white p-5 rounded-lg shadow-sm ">
+  
+  <table className="w-full text-center text-xs sm:text-sm md:text-base table-fixed">
+    <thead className="bg-gray-100 text-gray-600 uppercase">
+      <tr>
+        <th className="py-2 px-1 sm:py-3 sm:px-2">Order ID</th>
+        <th className="py-2 px-1 sm:py-3 sm:px-2">Customer</th>
+        <th className="py-2 px-1 sm:py-3 sm:px-2">Stock</th>
+        <th className="py-2 px-1 sm:py-3 sm:px-2">Price</th>
+        <th className="py-2 px-1 sm:py-3 sm:px-2">Status</th>
+        <th className="py-2 px-1 sm:py-3 sm:px-2">Actions</th>
+      </tr>
+    </thead>
 
-        {/* Order ID */}
-        <div className="bg-gray-50 rounded-lg p-3 w-[100px] mx-auto">
-          <h2 className="text-gray-500 mb-7 text-sm">Order ID</h2>
-          <div className="mb-10">ORD001</div>
-          <div className="mb-10">ORD002</div>
-          <div className="mb-10">ORD003</div>
-          <div className="mb-10">ORD004</div>
-          <div className="mb-10">ORD005</div>
-        </div>
+    <tbody className="divide-y divide-gray-200">
+      {orders.map((order, index) => (
+        <tr key={index} className="hover:bg-gray-50 transition">
+          <td className="py-2 px-1 sm:py-3 sm:px-2">{order.id}</td>
+          <td className="py-2 px-1 sm:py-3 sm:px-2">{order.customer}</td>
+          <td className="py-2 px-1 sm:py-3 sm:px-2">{order.stock}</td>
+          <td className="py-2 px-1 sm:py-3 sm:px-2">{order.price}</td>
+          <td className="py-2 px-1 sm:py-3 sm:px-2">
+            <span
+              className={`${getStatusColor(
+                order.status
+              )} text-white px-2 py-1 rounded-full text-[10px] sm:text-xs`}
+            >
+              {order.status}
+            </span>
+          </td>
+          <td className="py-2 px-1 sm:py-3 sm:px-2 flex justify-center">
+            <BsThreeDotsVertical className="text-gray-600 cursor-pointer hover:text-gray-900 text-sm sm:text-base" />
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
 
-        {/* Customer */}
-        <div className="bg-gray-50 rounded-lg p-3 w-[100px] mx-auto">
-          <h2 className="text-gray-500 mb-7 text-sm">Customer</h2>
-          <div className="mb-10">Alice</div>
-          <div className="mb-10">Bob</div>
-          <div className="mb-10">Charlie</div>
-          <div className="mb-10">Diana</div>
-          <div className="mb-10">Eve</div>
-        </div>
+  <hr className="mt-6" />
+</div>
 
-        {/* Stock */}
-        <div className="bg-gray-50 rounded-lg p-3 w-[100px] mx-auto">
-          <h2 className="text-gray-500 mb-7 text-sm">Stock</h2>
-          <div className="mb-10">150</div>
-          <div className="mb-10">75</div>
-          <div className="mb-10">200</div>
-          <div className="mb-10">90</div>
-          <div className="mb-10">300</div>
-        </div>
 
-        {/* Price */}
-        <div className="bg-gray-50 rounded-lg p-3 w-[100px] mx-auto">
-          <h2 className="text-gray-500 mb-7 text-sm">Price</h2>
-          <div className="mb-10">$250.00</div>
-          <div className="mb-10">$120.50</div>
-          <div className="mb-10">$50.00</div>
-          <div className="mb-10">$75.25</div>
-          <div className="mb-10">$300.00</div>
-        </div>
-
-        {/* Status */}
-        <div className="bg-gray-50 rounded-lg p-3 w-[100px] mx-auto">
-          <h2 className="text-gray-500 mb-7 text-sm">Status</h2>
-          <div className="bg-blue-600 rounded-full px-2 py-1 text-white mb-10 text-xs">Delivered</div>
-          <div className="bg-green-600 rounded-full px-2 py-1 text-white mb-10 text-xs">Pending</div>
-          <div className="bg-blue-600 rounded-full px-2 py-1 text-white mb-10 text-xs">Delivered</div>
-          <div className="bg-red-600 rounded-full px-2 py-1 text-white mb-10 text-xs">Failed</div>
-          <div className="bg-blue-600 rounded-full px-2 py-1 text-white mb-10 text-xs">Delivered</div>
-        </div>
-
-        {/* Actions */}
-        <div className="bg-gray-50 rounded-lg p-3 w-[100px] mx-auto">
-          <h2 className="text-gray-500 mb-7 text-sm">Actions</h2>
-          <div className="mb-12 flex justify-center"><BsThreeDotsVertical /></div>
-          <div className="mb-12 flex justify-center"><BsThreeDotsVertical /></div>
-          <div className="mb-12 flex justify-center"><BsThreeDotsVertical /></div>
-          <div className="mb-12 flex justify-center"><BsThreeDotsVertical /></div>
-          <div className="mb-12 flex justify-center"><BsThreeDotsVertical /></div>
-        </div>
-      </div>
-
-      <hr className="mx-5 md:mx-32 mt-5" />
-    </div>
   );
 };
 

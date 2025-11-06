@@ -3,7 +3,7 @@ import { FaRegHourglass } from "react-icons/fa";
 
 const Card = () => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lgl:grid-cols-4 gap-6 px-6 py-10 font-semibold mx-24">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lgl:grid-cols-4 gap-6 px-6 py-10 font-semibold mx-5">
       {/* 1 - Total Orders */}
       <div className="card bg-blue-500 text-white rounded-xl px-5 py-5">
         <div className="flex justify-between pb-5">
