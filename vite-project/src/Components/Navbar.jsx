@@ -1,7 +1,9 @@
 import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 
 const Navbar = () => {
+  const navigate = useNavigate();
   return (
     <nav className="w-full bg-white shadow-sm flex items-center justify-between py-3 gap-2 px-7 ">
       {/* Logo */}
@@ -36,6 +38,7 @@ const Navbar = () => {
           src="src\assets\pexels-tolgaaslanturk-11317774.jpg"
           alt="User"
           className="w-9 h-9 rounded-full border"
+          onClick={() => navigate("/login")}
         />
       </div>
     </nav>

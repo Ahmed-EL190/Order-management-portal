@@ -1,8 +1,8 @@
 import { ErrorMessage, Field, Formik } from "formik"
-import { Form } from "react-router-dom"
+import { Form, useNavigate } from "react-router-dom"
 
 const Login = () => {
-  
+   const navigate = useNavigate();
   return (
     <div className="flex justify-center py-32 px-10  min-h-screen bg-gray-50">
       
@@ -42,12 +42,12 @@ const Login = () => {
 
               <button
                 type="submit"
-                
+                onClick={() => navigate("/")}
                 className="bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
               >
                 <h3>Login</h3>
-              </button>
-              <p className="text-gray-600 text-center">Don't have an account?<a href="#" className="text-blue-700">Create Account</a></p>
+              </button >
+              <p className="text-gray-600 text-center" onClick={() => navigate("/")}>Don't have an account?<a href="#" className="text-blue-700">Create Account</a></p>
               
             </Form>
           
