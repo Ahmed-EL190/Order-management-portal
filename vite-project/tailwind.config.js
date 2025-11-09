@@ -15,7 +15,13 @@ export default {
       lgl: "1024px",
       xl: "1280px",
     },
-    extend: {},
+    theme: {
+    extend: {
+      fontFamily: {
+        poppins: ['Poppins', 'sans-serif'],
+      },
+    },
+  },
   },
   plugins: [],
 }
