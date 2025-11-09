@@ -35,7 +35,7 @@ const Navbar = () => {
           <Search className=" absolute left-3 top-2.5 text-gray-400" size={16} />
         </div>
         <img
-          src="src\assets\pexels-tolgaaslanturk-11317774.jpg"
+          src="https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg"
           alt="User"
           className="w-9 h-9 rounded-full border"
           onClick={() => navigate("/login")}
