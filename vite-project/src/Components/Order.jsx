@@ -28,15 +28,16 @@ const Order = () => {
   <hr className="mb-5" />
 
   
-  <table className="w-full text-center text-xs sm:text-sm md:text-base table-fixed">
-    <thead className="bg-gray-100 text-gray-600 uppercase">
-      <tr>
-        <th className="py-2 px-1 sm:py-3 sm:px-2">Order ID</th>
-        <th className="py-2 px-1 sm:py-3 sm:px-2">Customer</th>
-        <th className="py-2 px-1 sm:py-3 sm:px-2">Stock</th>
-        <th className="py-2 px-1 sm:py-3 sm:px-2">Price</th>
-        <th className="py-2 px-1 sm:py-3 sm:px-2">Status</th>
-        <th className="py-2 px-1 sm:py-3 sm:px-2">Actions</th>
+  <div className="flex">
+    <table className="w-full text-center text-xs sm:text-sm md:text-base table-fixed">
+    <thead className="bg-gray-100 text-gray-600 uppercase ">
+      <tr >
+        <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">Order ID</th>
+        <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">Customer</th>
+        <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs ">Stock</th>
+        <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">Price</th>
+        <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">Status</th>
+        <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">Actions</th>
       </tr>
     </thead>
 
@@ -63,6 +64,7 @@ const Order = () => {
       ))}
     </tbody>
   </table>
+  </div>
 
   <hr className="mt-6" />
 </div>

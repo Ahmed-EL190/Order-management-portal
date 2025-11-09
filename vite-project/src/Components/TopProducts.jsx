@@ -56,11 +56,11 @@ const TopProducts = () => {
       <table className="w-full text-center text-xs sm:text-sm md:text-base table-fixed">
         <thead className="bg-gray-100 text-gray-600 uppercase">
           <tr>
-            <th className="py-2 px-1 sm:py-3 sm:px-2  ">Product Name</th>
-            <th className="py-2 px-1 sm:py-3 sm:px-2">Category</th>
-            <th className="py-2 px-1 sm:py-3 sm:px-2">Stock</th>
-            <th className="py-2 px-1 sm:py-3 sm:px-2">Price</th>
-            <th className="py-2 px-1 sm:py-3 sm:px-2">Actions</th>
+            <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">Product Name</th>
+            <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">Category</th>
+            <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">Stock</th>
+            <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">Price</th>
+            <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">Actions</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
