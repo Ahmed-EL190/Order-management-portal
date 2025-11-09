@@ -1,28 +1,8 @@
-
-// import { Formik, Form, Field, ErrorMessage } from "formik";
-// import * as Yup from "yup";
-// import { signInWithEmailAndPassword } from "firebase/auth";
-// import { auth } from "../firebase";
-
 import { ErrorMessage, Field, Formik } from "formik"
 import { Form } from "react-router-dom"
 
 const Login = () => {
-  // const initialValues = { email: "", password: "" };
-
-  // const validationSchema = Yup.object({
-  //   email: Yup.string().email("بريد غير صالح").required("الإيميل مطلوب"),
-  //   password: Yup.string().min(6, "كلمة السر لا تقل عن 6 حروف").required("كلمة السر مطلوبة"),
-  // });
-
-  // const onSubmit = async (values, { setSubmitting, setStatus }) => {
-  //   try {
-  //     await signInWithEmailAndPassword(auth, values.email, values.password);
-  //     setStatus({ success: true, message: "تم تسجيل الدخول بنجاح ✅" });
-  //   } catch (error) {
-  //     setStatus({ success: false, message: "خطأ في تسجيل الدخول ❌" });
-  //   }
-  //   setSubmitting(false);
+  
   return (
     <div className="flex justify-center py-32 px-10  min-h-screen bg-gray-50">
       
@@ -35,9 +15,6 @@ const Login = () => {
         </p>
 
         <Formik
-          // initialValues={initialValues}
-          // validationSchema={validationSchema}
-          // onSubmit={onSubmit}
         >
           
             <Form className="flex flex-col gap-4">
