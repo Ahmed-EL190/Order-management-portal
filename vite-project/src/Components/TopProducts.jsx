@@ -2,36 +2,11 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 
 const TopProducts = () => {
   const TopProduct = [
-    {
-      ProductName: "Wireless Ergonomic Mouse",
-      Category: "Electronics",
-      Stock: 150,
-      Price: "$49.99",
-    },
-    {
-      ProductName: "Noise-Cancelling deadphones",
-      Category: "Electronics",
-      Stock: 75,
-      Price: "$199.99",
-    },
-    {
-      ProductName: "Organic Coffee Beans",
-      Category: "Groceries",
-      Stock: 200,
-      Price: "$18.50",
-    },
-    {
-      ProductName: "Smart Home Security Camera",
-      Category: "Smart Home",
-      Stock: 90,
-      Price: "$120.00",
-    },
-    {
-      ProductName: "Stainless Steel Wate Bottle",
-      Category: "Home Goods",
-      Stock: 300,
-      Price: "$25.00",
-    },
+    {  ProductName: "Wireless Ergonomic Mouse",  Category: "Electronics",  Stock: 150,  Price: "$49.99",},
+    {  ProductName: "Noise-Cancelling deadphones",  Category: "Electronics",  Stock: 75,  Price: "$199.99",},
+    {  ProductName: "Organic Coffee Beans",  Category: "Groceries",  Stock: 200,  Price: "$18.50",},
+    {  ProductName: "Smart Home Security Camera",  Category: "Smart Home",  Stock: 90,  Price: "$120.00",},
+    {  ProductName: "Stainless Steel Wate Bottle",  Category: "Home Goods",  Stock: 300,  Price: "$25.00",},
   ];
   const getCategoryColor = (Category) => {
     switch (Category) {
@@ -56,7 +31,9 @@ const TopProducts = () => {
       <table className="w-full text-center text-xs sm:text-sm md:text-base table-fixed">
         <thead className="bg-gray-100 text-gray-600 uppercase">
           <tr>
-            <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">Product Name</th>
+            <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">
+              Product Name
+            </th>
             <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">Category</th>
             <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">Stock</th>
             <th className="py-2 px-1 sm:py-3 sm:px-2 xs:text-xs">Price</th>
@@ -64,9 +41,11 @@ const TopProducts = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
-          {TopProduct.map((topProducts, index) => (
-            <tr key={index} className="hover:bg-gray-50 transition">
-              <td className="py-2 px-1 sm:py-3 sm:px-2 ">{topProducts.ProductName}</td>
+          {TopProduct.map((topProducts, id) => (
+            <tr key={id} className="hover:bg-gray-50 transition">
+              <td className="py-2 px-1 sm:py-3 sm:px-2 ">
+                {topProducts.ProductName}
+              </td>
               <td className="py-2 px-1 sm:py-3 sm:px-2">
                 <span
                   className={`${getCategoryColor(
@@ -87,8 +66,6 @@ const TopProducts = () => {
       </table>
       <hr className="mt-6" />
     </div>
-
-    
   );
 };
 

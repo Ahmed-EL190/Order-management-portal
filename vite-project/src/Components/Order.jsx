@@ -1,6 +1,23 @@
+import { useReducer } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
+
 const Order = () => {
+  const intialState = 0
+  const reducer = (state , action ) => {
+    switch (action) {
+      case "plus":
+        return state + 1;
+      case "minse":
+        return state - 1;
+      case "reset":
+        return 0;
+      default:
+        return state;
+    }
+
+  }
+  const [state , dispatch] = useReducer (reducer , intialState )
   const orders = [
     { id: "ORD001", customer: "Alice", stock: 150, price: "$250.00", status: "Delivered" },
     { id: "ORD002", customer: "Bob", stock: 75, price: "$120.50", status: "Pending" },
@@ -25,6 +42,15 @@ const Order = () => {
   return (
     <div className="font-semibold bg-white rounded-lg shadow-sm mx-5 p-5">
   <h1 className="text-lg sm:text-xl md:text-2xl font-semibold mb-5">Recent Orders</h1>
+  <div>
+    <button onClick={()=>dispatch("plus")} className="w-14 h-8 bg-red-700 m-3 text-xl rounded"> + </button>
+    <button onClick={()=>dispatch("minse")} className="w-14 h-8 bg-red-700 m-3 text-xl rounded"> - </button>
+    <button onClick={()=>dispatch("reset")} className="w-14 h-8 bg-red-700 m-3 text-xl rounded"> reset </button>
+    <span className="w-14 h-8 bg-red-700 m-3 text-xl rounded">
+      {state}
+    </span>
+  </div>
+  
   <hr className="mb-5" />
 
   
@@ -42,8 +68,8 @@ const Order = () => {
     </thead>
 
     <tbody className="divide-y divide-gray-200">
-      {orders.map((order, index) => (
-        <tr key={index} className="hover:bg-gray-50 transition">
+      {orders.map((order, id) => (
+        <tr key={id} className="hover:bg-gray-50 transition">
           <td className="py-2 px-1 sm:py-3 sm:px-2">{order.id}</td>
           <td className="py-2 px-1 sm:py-3 sm:px-2">{order.customer}</td>
           <td className="py-2 px-1 sm:py-3 sm:px-2">{order.stock}</td>

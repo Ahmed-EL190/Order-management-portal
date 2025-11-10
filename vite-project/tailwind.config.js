@@ -15,13 +15,15 @@ export default {
       lgl: "1024px",
       xl: "1280px",
     },
-    theme: {
-    extend: {
-      fontFamily: {
-        poppins: ['Poppins', 'sans-serif'],
-      },
-    },
-  },
+    
+    fontFamily: {
+      'sans': ['ui-sans-serif', 'system-ui',],
+      'serif': ['ui-serif', 'Georgia',],
+      'mono': ['ui-monospace', 'SFMono-Regular',],
+      'display': ['Oswald',],
+      'body': ['"Open Sans"',],
+    
+  }
   },
   plugins: [],
 }
