@@ -1,13 +1,27 @@
+import { useReducer } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 const TopProducts = () => {
-  const TopProduct = [
-    {  ProductName: "Wireless Ergonomic Mouse",  Category: "Electronics",  Stock: 150,  Price: "$49.99",},
-    {  ProductName: "Noise-Cancelling deadphones",  Category: "Electronics",  Stock: 75,  Price: "$199.99",},
-    {  ProductName: "Organic Coffee Beans",  Category: "Groceries",  Stock: 200,  Price: "$18.50",},
-    {  ProductName: "Smart Home Security Camera",  Category: "Smart Home",  Stock: 90,  Price: "$120.00",},
-    {  ProductName: "Stainless Steel Wate Bottle",  Category: "Home Goods",  Stock: 300,  Price: "$25.00",},
-  ];
+  const initialState = {
+    topProduct : [
+    { id: 1,  ProductName: "Wireless Ergonomic Mouse",  Category: "Electronics",  Stock: 150,  Price: "$49.99",},
+    { id: 2,  ProductName: "Noise-Cancelling deadphones",  Category: "Electronics",  Stock: 75,  Price: "$199.99",},
+    { id: 3,  ProductName: "Organic Coffee Beans",  Category: "Groceries",  Stock: 200,  Price: "$18.50",},
+    { id: 4,  ProductName: "Smart Home Security Camera",  Category: "Smart Home",  Stock: 90,  Price: "$120.00",},
+    { id: 5,  ProductName: "Stainless Steel Wate Bottle",  Category: "Home Goods",  Stock: 300,  Price: "$25.00",},
+  ]
+  };
+  const reducer = (state, action ) => {
+    switch (action.type) {
+      case "ADD_PRODUCT":
+        return {...state, topProduct: [...state.topProduct , action.payload] } ;
+        case "DELETE_PRODUCT":
+        return { ...state , topProduct: state.topProduct.filter(TopProducts => TopProducts.id !== action.payload) } ;
+      default:
+        return state ;
+    }
+  }
+  const [state, dispatch] = useReducer ( reducer, initialState  );
   const getCategoryColor = (Category) => {
     switch (Category) {
       case "Electronics":
@@ -41,7 +55,7 @@ const TopProducts = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
-          {TopProduct.map((topProducts, id) => (
+          {state.topProduct.map((topProducts, id) => (
             <tr key={id} className="hover:bg-gray-50 transition">
               <td className="py-2 px-1 sm:py-3 sm:px-2 ">
                 {topProducts.ProductName}
@@ -58,8 +72,11 @@ const TopProducts = () => {
               <td className="py-2 px-1 sm:py-3 sm:px-2">{topProducts.Stock}</td>
               <td className="py-2 px-1 sm:py-3 sm:px-2">{topProducts.Price}</td>
               <td className="py-2 px-1 sm:py-3 sm:px-2 flex justify-center">
-                <BsThreeDotsVertical className="text-gray-600 cursor-pointer hover:text-gray-900 text-sm sm:text-base" />
+                <BsThreeDotsVertical 
+               onClick ={() =>dispatch ({type: "DELETE_PRODUCT", payload:topProducts.id}) }
+                className="text-gray-600 cursor-pointer hover:text-gray-900 text-sm sm:text-base" />
               </td>
+              
             </tr>
           ))}
         </tbody>
