@@ -1,29 +1,10 @@
-import { useReducer } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { useGlobal } from "../context/GlobalContext";
+
 
 const Order = () => {
-  const intialState = {
-    orders : [
-      { id: "ORD001", customer: "Alice", stock: 150, price: "$250.00", status: "Delivered" },
-      { id: "ORD002", customer: "Bob", stock: 75, price: "$120.50", status: "Pending" },
-      { id: "ORD003", customer: "Charlie", stock: 200, price: "$50.00", status: "Delivered" },
-      { id: "ORD004", customer: "Diana", stock: 90, price: "$75.25", status: "Failed" },
-      { id: "ORD005", customer: "Eve", stock: 300, price: "$300.00", status: "Delivered" },
-    ],
-  };
 
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case "ADD_ORDER":
-        return { ...state, orders: [...state.orders, action.payload] };
-      case "DELETE_ORDER":
-        return { ...state, orders: state.orders.filter(order => order.id !== action.payload) };
-      default:
-        return state;
-    }
-  };
-
-  const [state, dispatch] = useReducer(reducer, intialState);
+  const { state, dispatch } = useGlobal(); 
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -41,8 +22,6 @@ const Order = () => {
   return (
     <div className="font-semibold bg-white rounded-lg shadow-sm mx-5 p-5">
       <h1 className="text-lg sm:text-xl md:text-2xl font-semibold mb-5">Recent Orders</h1>
-
-      
 
       <hr className="mb-5" />
 
@@ -68,7 +47,9 @@ const Order = () => {
                 <td className="py-2">{order.price}</td>
 
                 <td className="py-2">
-                  <span className={`${getStatusColor(order.status)} text-white px-2 py-1 rounded-full text-[10px] sm:text-xs`}>
+                  <span
+                    className={`${getStatusColor(order.status)} text-white px-2 py-1 rounded-full text-[10px] sm:text-xs`}
+                  >
                     {order.status}
                   </span>
                 </td>
@@ -76,7 +57,12 @@ const Order = () => {
                 <td className="py-2 flex justify-center">
                   <BsThreeDotsVertical
                     className="text-gray-600 cursor-pointer hover:text-gray-900"
-                    onClick={() => dispatch({ type: "DELETE_ORDER", payload: order.id })}
+                    onClick={() =>
+                      dispatch({
+                        type: "DELETE_ORDER",
+                        payload: order.id,
+                      })
+                    }
                   />
                 </td>
               </tr>

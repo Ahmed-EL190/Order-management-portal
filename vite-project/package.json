@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.8",
+    "context": "^3.0.33",
     "firebase": "^12.5.0",
     "formik": "^2.4.8",
     "lucide-react": "^0.552.0",
