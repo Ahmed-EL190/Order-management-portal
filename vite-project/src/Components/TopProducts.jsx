@@ -1,5 +1,5 @@
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { useGlobal } from "../context/GlobalContext.jsx";
+import { useGlobal } from "../context/GlobalContext";
 
 
 
