@@ -1,5 +1,5 @@
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { useGlobal } from "../context/GlobalContext";
+import { useGlobal } from "../context/GlobalContext.jsx";
 
 
 const Order = () => {
