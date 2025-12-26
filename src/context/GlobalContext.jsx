@@ -1,7 +1,6 @@
-import { createContext, useContext, useReducer, useEffect } from "react";
+import { useReducer, useEffect } from "react";
+import { GlobalContext } from "./context";
 import { reducer, initialState } from "./globalReducer";
-
-const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -23,5 +22,3 @@ export const GlobalProvider = ({ children }) => {
     </GlobalContext.Provider>
   );
 };
-
-export const useGlobal = () => useContext(GlobalContext);
