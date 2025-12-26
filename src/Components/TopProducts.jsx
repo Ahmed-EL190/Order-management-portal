@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { useGlobal } from "/src/context/GlobalContext";
+import { useGlobal } from "../context/useGlobal";
+
 
 const TopProducts = () => {
   const { state, dispatch } = useGlobal();

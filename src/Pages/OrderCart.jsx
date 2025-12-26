@@ -1,4 +1,4 @@
-import { useGlobal } from "../context/GlobalContext";
+import { useGlobal } from "../context/useGlobal";
 
 const OrderCart = () => {
   const { state } = useGlobal();

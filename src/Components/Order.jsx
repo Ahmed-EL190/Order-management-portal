@@ -1,6 +1,7 @@
 
-import { useGlobal } from "/src/context/GlobalContext";
+
 import { Link } from "react-router-dom";
+import { useGlobal } from "../context/useGlobal";
 
 
 
