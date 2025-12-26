@@ -18,9 +18,7 @@ export const initialState = {
 
 export const reducer = (state, action) => {
   switch (action.type) {
-    case "LOAD_CART":
-      return { ...state, cart: action.payload || [] };
-
+    
     case "ADD_ORDER_TO_CART": {
       const add = state.orderCart.find(item => item.id === action.payload.id);
       if (add) {
