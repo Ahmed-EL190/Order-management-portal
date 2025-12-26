@@ -1,93 +1,27 @@
-import { createContext } from "react";
-import { useReducer, useContext } from "react";
+import { createContext, useContext, useReducer, useEffect } from "react";
+import { reducer, initialState } from "./globalReducer";
 
-export const globalContext = createContext();
-
-const initialState = {
-  cart: JSON.parse(localStorage.getItem("cart")) || [], 
-   orderCart: [],
-  orders: [
-    {id: "ORD001",customer: "Alice",stock: 150,price: "$250.00",status: "Delivered",
-    },
-    {id: "ORD002",customer: "Bob",stock: 75,price: "$120.50",status: "Pending",
-    },
-    {id: "ORD003",customer: "Charlie",stock: 200,price: "$50.00",status: "Delivered",
-    },
-    {id: "ORD004",customer: "Diana",stock: 90,price: "$75.25",status: "Failed",
-    },
-    {id: "ORD005",customer: "Eve",stock: 300,price: "$300.00",status: "Delivered",
-    },
-  ],
-
-  topProduct: [
-    {id: 1,ProductName: "Wireless Mouse",Category: "Electronics",Stock: 150,Price: "$49.99",
-    },
-    {id: 2,ProductName: "Noise Headphones",Category: "Electronics",Stock: 75,Price: "$199.99",
-    },
-    {id: 3,ProductName: "Wireless Mouse",Category: "Electronics",Stock: 870,Price: "$87.99",
-    },
-    {id: 4,ProductName: "Noise Headphones",Category: "Electronics",Stock: 350,Price: "$34.99",
-    },
-  ]
-};
-
-const reducer = (state, action) => {
-  switch (action.type) {
-
-   case "ADD_ORDER_TO_CART": {
-  const add = state.orderCart.find(
-    (item) => item.id === action.payload.id
-  );
-
-  if (add) {
-    return {
-      ...state,orderCart: state.orderCart.map(item =>item.id === action.payload.id? { ...item, qty: item.qty + 1 }: item
-      ),
-    };
-  }
-
-  return {
-    ...state,orderCart: [...state.orderCart, { ...action.payload, qty: 1 }],
-  };
-}
-
-   
-
-    case "ADD_PRODUCT": {
-      const add = state.cart.find(
-        (item) => item.id === action.payload.id
-      );
-
-      if (add) {
-        return {
-          ...state,
-    cart: state.cart.map((item) =>
-      item.id === action.payload.id
-        ? { ...item, qty: item.qty + 1 }
-        : item
-          ),
-        };
-      }
-      return {
-        ...state,
-        cart: [...state.cart, { ...action.payload, qty: 1 }],
-      };
-    }
-    default:
-      return state;
-  }
-};
+const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      dispatch({ type: "LOAD_CART", payload: JSON.parse(storedCart) });
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(state.cart));
+  }, [state.cart]);
+
   return (
-    <globalContext.Provider value={{ state, dispatch }}>
+    <GlobalContext.Provider value={{ state, dispatch }}>
       {children}
-    </globalContext.Provider>
+    </GlobalContext.Provider>
   );
 };
 
-export const useGlobal = () => {
-  return useContext(globalContext);
-};
+export const useGlobal = () => useContext(GlobalContext);
