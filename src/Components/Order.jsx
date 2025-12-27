@@ -1,13 +1,17 @@
-
-
 import { Link } from "react-router-dom";
 import { useGlobal } from "../context/useGlobal";
-
-
+import { useEffect, useState } from "react";
 
 const Order = () => {
+  const [products, setProducts] = useState([]);
 
-  const { state, dispatch } = useGlobal(); 
+  useEffect(() => {
+    fetch("https://fakestoreapi.com/products")
+      .then(res => res.json())
+      .then(data => setProducts(data));
+  }, []);
+
+  const { state, dispatch } = useGlobal();
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -23,46 +27,120 @@ const Order = () => {
   };
 
   return (
-    <div className="font-semibold bg-white rounded-lg shadow-sm mx-5 p-5">
-      <div className="flex justify-between items-center">
-        <h1 className="text-lg sm:text-xl md:text-2xl font-semibold mb-5">Recent Orders</h1>
-      <h1>
-        <Link className="bg-blue-900 rounded p-2 text-white cursor-pointer  " to="/order-cart">Order Cart</Link>
+    <div className="bg-white rounded-xl shadow-md mx-4 md:mx-5 p-5">
 
-      </h1>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-3 mb-6">
+        <h1 className="text-xl md:text-2xl font-bold text-gray-800">
+          Recent Orders
+        </h1>
+
+        <Link
+          to="/order-cart"
+          className="bg-blue-900 hover:bg-blue-800 transition text-white px-4 py-2 rounded-lg text-sm"
+        >
+          Order Cart
+        </Link>
       </div>
-      <hr className="mb-5" />
 
-      <div className="flex">
-        <table className="w-full text-center text-xs sm:text-sm md:text-base table-fixed">
-          <thead className="bg-gray-100 text-gray-600 uppercase">
-            <tr>
-              <th className="py-2">Order ID</th>
-              <th className="py-2">Customer</th>
-              <th className="py-2">Stock</th>
-              <th className="py-2">Price</th>
-              <th className="py-2">Status</th>
-              <th className="py-2">Actions</th>
-            </tr>
-          </thead>
+      {/* ===== Mobile View (Cards) ===== */}
+      <div className="space-y-4 md:hidden">
+        {state.orders.map(order => (
+          <div
+            key={order.id}
+            className="border rounded-lg p-4 shadow-sm"
+          >
+            <div className="flex justify-between items-center mb-3">
+              <span className="font-semibold text-gray-700">
+                Order #{order.id}
+              </span>
+              <span
+                className={`${getStatusColor(order.status)} text-white px-2 py-1 rounded-full text-xs`}
+              >
+                {order.status}
+              </span>
+            </div>
 
-          <tbody className="divide-y divide-gray-200">
-            {state.orders.map((order) => (
-              <tr key={order.id} className="hover:bg-gray-50 transition">
-                <td className="py-2">{order.id}</td>
-                <td className="py-2">{order.customer}</td>
-                <td className="py-2">{order.stock}</td>
-                <td className="py-2">{order.price}</td>
+            <div className="flex items-center gap-4">
+              {products.length > 0 && (
+                <img
+                  src={products[0].image}
+                  alt=""
+                  className="h-16 w-16 object-contain"
+                />
+              )}
 
-                <td className="py-2">
-                  <span
-                    className={`${getStatusColor(order.status)} text-white px-2 py-1 rounded-full text-[10px] sm:text-xs`}
-                  >
-                    {order.status}
-                  </span>
-                </td>
+              <div className="flex-1 text-sm text-gray-600">
+                <p><b>Customer:</b> {order.customer}</p>
+                <p><b>Price:</b> {order.price} </p>
+              </div>
+            </div>
 
-                <td className="py-2 flex justify-center">
+            <button
+              onClick={() =>
+                dispatch({
+                  type: "ADD_ORDER_TO_CART",
+                  payload: order,
+                })
+              }
+              className="mt-4 w-full bg-red-900 hover:bg-red-800 transition text-white py-2 rounded-lg text-sm"
+            >
+              Add to Cart
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* ===== Desktop / Tablet View (Table) ===== */}
+      <table className="hidden md:table w-full text-sm text-center mt-6">
+        <thead className="bg-gray-100 text-gray-600 uppercase">
+          <tr>
+            <th className="py-3">Order ID</th>
+            <th className="py-3">Customer</th>
+            <th className="py-3">Product</th>
+            <th className="py-3">Price</th>
+            <th className="py-3">Status</th>
+            <th className="py-3">Action</th>
+          </tr>
+        </thead>
+
+        <tbody className="divide-y">
+          {state.orders.map(order => (
+            <tr
+              key={order.id}
+              className="hover:bg-gray-50 transition"
+            >
+              <td className="py-3 font-medium">
+                #{order.id}
+              </td>
+
+              <td className="py-3">
+                {order.customer}
+              </td>
+
+              <td className="py-3">
+                {products.length > 0 && (
+                  <img
+                    src={products[1].image}
+                    alt={products[1].image}
+                    className="h-16 w-16 object-contain mx-auto"
+                  />
+                )}
+              </td>
+
+              <td className="py-3 font-semibold text-green-600">
+                {order.price}
+              </td>
+
+              <td className="py-3">
+                <span
+                  className={`${getStatusColor(order.status)} text-white px-3 py-1 rounded-full text-xs`}
+                >
+                  {order.status}
+                </span>
+              </td>
+
+              <td className="py-3">
                 <button
                   onClick={() =>
                     dispatch({
@@ -70,18 +148,16 @@ const Order = () => {
                       payload: order,
                     })
                   }
-                  className="bg-red-900 rounded-full p-2 text-white cursor-pointer hover:text-gray-900 sml:text-xs "
+                  className="bg-red-900 hover:bg-red-800 transition text-white px-4 py-1.5 rounded-full text-xs"
                 >
                   Add to Cart
                 </button>
               </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      <hr className="mt-6" />
     </div>
   );
 };

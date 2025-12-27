@@ -1,67 +1,79 @@
 import { Link } from "react-router-dom";
 import { useGlobal } from "../context/useGlobal";
 
-
 const TopProducts = () => {
   const { state, dispatch } = useGlobal();
-  const getCategoryColor = (Category) => {
-    switch (Category) {
-      case "Electronics":
-        return "border border-blue-400";
-      case "Groceries":
-        return "border border-green-400";
-      case "Smart Home":
-        return "border border-purple-400";
-      case "Home Goods":
-        return "border border-yellow-400";
-      default:
-        return "";
-    }
-  };
+
+  // const getCategoryColor = (category) => {
+  //   switch (category) {
+  //     case "Electronics":
+  //       return "border border-blue-400 text-blue-600";
+  //     case "Groceries":
+  //       return "border border-green-400 text-green-600";
+  //     case "Smart Home":
+  //       return "border border-purple-400 text-purple-600";
+  //     case "Home Goods":
+  //       return "border border-yellow-400 text-yellow-600";
+  //     default:
+  //       return "border border-gray-300 text-gray-600";
+  //   }
+  // };
 
   return (
-    <div className="font-semibold bg-white rounded-lg shadow-sm mx-5 p-5">
-      <div className="flex justify-between items-center">
-        <h1 className="text-lg sm:text-xl md:text-2xl font-semibold mb-5">
-        Top Products
-      </h1>
-      <h1>
-        <Link className="bg-blue-900 rounded p-2 text-white cursor-pointer  " to="/cart">Cart</Link>
-      </h1>
-      </div>
-      <hr className="mb-5" />
+    <div className="bg-white rounded-lg shadow-sm mx-3 sm:mx-5 p-4 sm:p-5">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-base sm:text-xl md:text-2xl font-semibold">
+          Top Products
+        </h1>
 
-      <table className="w-full text-center text-xs sm:text-sm md:text-base table-fixed">
+        <Link
+          to="/cart"
+          className="bg-blue-900 text-white text-xs sm:text-sm px-3 py-1.5 rounded"
+        >
+          Cart
+        </Link>
+      </div>
+
+      <hr className="mb-4" />
+
+      <table className="w-full text-center text-[10px] sm:text-sm table-fixed">
         <thead className="bg-gray-100 text-gray-600 uppercase">
           <tr>
-            <th className="py-2 px-1">Product Name</th>
-            <th className="py-2 px-1">Category</th>
-            <th className="py-2 px-1">Stock</th>
-            <th className="py-2 px-1">Price</th>
-            <th className="py-2 px-1">Actions</th>
+            <th className="py-2">Product</th>
+            <th className="py-2 hidden sm:table-cell">Category</th>
+            <th className="py-2 hidden md:table-cell">Stock</th>
+            <th className="py-2">Price</th>
+            <th className="py-2">Action</th>
           </tr>
         </thead>
 
         <tbody className="divide-y divide-gray-200">
           {state.topProduct.map((product) => (
-            <tr key={product.id} className="hover:bg-gray-50 transition">
-              <td className="py-2">{product.ProductName}</td>
-
-              <td className="py-2">
-                <span
-                  className={`${getCategoryColor(
-                    product.Category
-                  )} text-black px-2 py-1 rounded-full text-[10px] sm:text-xs`}
-                >
-                  {product.Category}
-                </span>
+            <tr key={product.id} className="hover:bg-gray-50">
+              <td className="py-2 font-medium truncate">
+                {product.ProductName}
               </td>
 
-              <td className="py-2">{product.Stock}</td>
+              <td className="py-2 hidden sm:table-cell">
+                {/* <span
+                  className={`${getCategoryColor(
+                    product.Category
+                  )} px-2 py-1 rounded-full text-[9px] sm:text-xs`}
+                >
+                  {product.Category}
+                </span> */}
+              </td>
 
-              <td className="py-2">{product.Price}</td>
+              <td className="py-2 hidden md:table-cell">
+                {product.Stock}
+              </td>
 
-              <td className="py-2 flex justify-center">
+              <td className="py-2 font-semibold">
+                ${product.Price}
+              </td>
+
+              <td className="py-2">
                 <button
                   onClick={() =>
                     dispatch({
@@ -69,9 +81,17 @@ const TopProducts = () => {
                       payload: product,
                     })
                   }
-                  className="bg-red-900 rounded-full p-2 text-white cursor-pointer hover:text-gray-900 sml:text-xs"
+                  className="
+                    bg-red-900 
+                    text-white 
+                    text-[9px] sm:text-xs 
+                    px-3 py-1.5 
+                    rounded-full 
+                    hover:bg-red-700
+                    transition
+                  "
                 >
-                  Add to Cart
+                  Add
                 </button>
               </td>
             </tr>
@@ -79,7 +99,7 @@ const TopProducts = () => {
         </tbody>
       </table>
 
-      <hr className="mt-6" />
+      <hr className="mt-5" />
     </div>
   );
 };
