@@ -145,7 +145,7 @@ const TopProducts = () => {
                 <td className="py-3">{product.Stock}</td>
 
                 <td className="py-3 font-semibold text-green-600">
-                  ${product.Price}
+                  {product.Price}
                 </td>
 
                 <td className="py-3">
