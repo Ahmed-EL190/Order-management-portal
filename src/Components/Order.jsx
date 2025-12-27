@@ -72,7 +72,7 @@ const Order = () => {
 
               <div className="flex-1 text-sm text-gray-600">
                 <p><b>Customer:</b> {order.customer}</p>
-                <p><b>Price:</b> {order.price} </p>
+                <p ><b>Price:</b>  <span className="text-green-600 font-bold">{order.price}</span> </p>
               </div>
             </div>
  

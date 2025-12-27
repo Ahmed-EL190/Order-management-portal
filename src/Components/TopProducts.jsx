@@ -69,7 +69,7 @@ const TopProducts = () => {
                 </h2>
 
                 <span className="text-sm font-bold text-green-600">
-                  ${product.Price}
+                  {product.Price}
                 </span>
               </div>
             </div>
