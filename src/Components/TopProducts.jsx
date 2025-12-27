@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 const TopProducts = () => {
   const [products, setProducts] = useState([]);
+  const [cardDetails, setCardDatails] = useState(null)
   
     useEffect(() => {
       fetch("https://fakestoreapi.com/products")
@@ -130,6 +131,7 @@ const TopProducts = () => {
                     src={products[1].image}
                     alt={products[1].image}
                     className="h-16 w-16 object-contain mx-auto"
+                    onClick={() => {setCardDatails(products[1])}}
                   />
                 )}
               </td>
@@ -170,6 +172,76 @@ const TopProducts = () => {
             ))}
           </tbody>
         </table>
+        {
+          cardDetails && (
+            <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+          onClick={() => setCardDatails(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl w-80 md:w-[28rem] p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="h-56 flex items-center justify-center mb-4">
+              <img
+                src={cardDetails.image}
+                alt={cardDetails.title}
+                className="h-full object-contain"
+              />
+            </div>
+
+            <span className="text-[11px] uppercase tracking-wide bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
+              {cardDetails.category}
+            </span>
+
+            <h2 className="text-sm font-bold text-gray-800 mt-3">
+              {cardDetails.title}
+            </h2>
+
+            <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+              {cardDetails.description}
+            </p>
+
+            <div className="flex justify-between items-center mt-4">
+              <span className="text-xl font-bold text-green-600">
+                ${cardDetails.price}
+              </span>
+
+              {cardDetails.rating && (
+                <span className="text-xs text-gray-500">
+                  ⭐ {cardDetails.rating.rate} / 5
+                  <span className="ml-1">({cardDetails.rating.count})</span>
+                </span>
+              )}
+            </div>
+
+            <button
+              onClick={() => setCardDatails(null)}
+              className="w-full mt-5 bg-red-600 hover:bg-red-700  text-white py-2 rounded-xl text-sm font-medium active:scale-95 transition-all duration-400"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+          )
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
       </div>
 
     </div>
