@@ -64,7 +64,7 @@ const Order = () => {
             <div className="flex items-center gap-4">
               {products.length > 0 && (
                 <img
-                  src={products[0].image}
+                  src={products[1].image}
                   alt=""
                   className="h-16 w-16 object-contain"
                 />
@@ -75,7 +75,7 @@ const Order = () => {
                 <p><b>Price:</b> {order.price} </p>
               </div>
             </div>
-
+ 
             <button
               onClick={() =>
                 dispatch({
@@ -83,9 +83,17 @@ const Order = () => {
                   payload: order,
                 })
               }
-              className="mt-4 w-full bg-red-900 hover:bg-red-800 transition text-white py-2 rounded-lg text-sm"
+              className="
+                mt-4 w-full
+                bg-red-900
+                hover:bg-red-800
+                active:bg-red-800
+                active:scale-95
+                transition-all duration-200
+                text-white py-2 rounded-lg text-sm
+              "
             >
-              Add to Cart
+              🛒Add to order
             </button>
           </div>
         ))}
@@ -104,7 +112,7 @@ const Order = () => {
           </tr>
         </thead>
 
-        <tbody className="divide-y">
+        <tbody className="divide-y ">
           {state.orders.map(order => (
             <tr
               key={order.id}
@@ -148,9 +156,16 @@ const Order = () => {
                       payload: order,
                     })
                   }
-                  className="bg-red-900 hover:bg-red-800 transition text-white px-4 py-1.5 rounded-full text-xs"
+                  className="
+                      bg-red-900 hover:bg-red-800
+                      active:scale-95
+                      transition-all duration-200
+                      text-white px-4 py-1.5
+                      rounded-full text-xs
+                      flex items-center gap-1 mx-auto
+                    "
                 >
-                  Add to Cart
+                  🛒Add to order
                 </button>
               </td>
             </tr>
