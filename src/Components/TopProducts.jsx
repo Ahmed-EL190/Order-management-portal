@@ -4,15 +4,15 @@ import { useEffect, useState } from "react";
 
 const TopProducts = () => {
   const [products, setProducts] = useState([]);
-  const [cardDetails, setCardDatails] = useState(null)
-  
-    useEffect(() => {
-      fetch("https://fakestoreapi.com/products")
-        .then(res => res.json())
-        .then(data => setProducts(data));
-    }, []);
-  
+  const [cardDetails, setCardDetails] = useState(null);
+
   const { state, dispatch } = useGlobal();
+
+  useEffect(() => {
+    fetch("https://fakestoreapi.com/products")
+      .then((res) => res.json())
+      .then((data) => setProducts(data));
+  }, []);
 
   const categoryStyle = (cat) => {
     switch (cat) {
@@ -31,7 +31,6 @@ const TopProducts = () => {
 
   return (
     <div className="bg-white rounded-xl shadow-md mx-4 md:mx-5 p-5 my-10">
-
       {/* ===== Header ===== */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-3 mb-6">
         <h1 className="text-xl md:text-2xl font-bold text-gray-800">
@@ -54,16 +53,18 @@ const TopProducts = () => {
             className="border rounded-lg p-4 shadow-sm"
           >
             <div className="flex items-center gap-4 mb-3">
-              <td className="py-3">
+              {/* Image */}
+              <div>
                 {products.length > 0 && (
                   <img
-                    src={products[1].image}
-                    alt={products[1].image}
-                    className="h-16 w-16 object-contain mx-auto"
+                    src={products[1]?.image}
+                    alt={product.ProductName}
+                    className="h-16 w-16 object-contain"
                   />
                 )}
-              </td>
+              </div>
 
+              {/* Info */}
               <div className="flex-1">
                 <h2 className="font-semibold text-gray-800 truncate">
                   {product.ProductName}
@@ -86,22 +87,16 @@ const TopProducts = () => {
                 </span>
               </p>
 
-              <p><b>Stock:</b> {product.Stock}</p>
+              <p>
+                <b>Stock:</b> {product.Stock}
+              </p>
             </div>
 
             <button
               onClick={() =>
                 dispatch({ type: "ADD_PRODUCT", payload: product })
               }
-              className="
-                mt-4 w-full
-                bg-red-900
-                hover:bg-red-800
-                active:bg-red-800
-                active:scale-95
-                transition-all duration-200
-                text-white py-2 rounded-lg text-sm
-              "
+              className="mt-4 w-full bg-red-900 hover:bg-red-800 active:scale-95 transition text-white py-2 rounded-lg text-sm"
             >
               🛒 Add to Cart
             </button>
@@ -126,15 +121,16 @@ const TopProducts = () => {
             {state.topProduct.map((product) => (
               <tr key={product.id} className="hover:bg-gray-50 transition">
                 <td className="py-3">
-                {products.length > 0 && (
-                  <img
-                    src={products[1].image}
-                    alt={products[1].image}
-                    className="h-16 w-16 object-contain mx-auto"
-                    onClick={() => {setCardDatails(products[1])}}
-                  />
-                )}
-              </td>
+                  {products.length > 0 && (
+                    <img
+                      src={products[1]?.image}
+                      alt={product.ProductName}
+                      className="h-16 w-16 object-contain mx-auto cursor-pointer"
+                      onClick={() => setCardDetails(products[1])}
+                    />
+                  )}
+                </td>
+
                 <td className="py-3">
                   <span
                     className={`${categoryStyle(product.Category)}
@@ -155,15 +151,7 @@ const TopProducts = () => {
                     onClick={() =>
                       dispatch({ type: "ADD_PRODUCT", payload: product })
                     }
-                    className="
-                      bg-red-900
-                      hover:bg-red-800
-                      active:bg-red-800
-                      active:scale-95
-                      transition-all duration-200
-                      text-white px-4 py-1.5
-                      rounded-full text-xs
-                    "
+                    className="bg-red-900 hover:bg-red-800 active:scale-95 transition text-white px-4 py-1.5 rounded-full text-xs"
                   >
                     🛒 Add to cart
                   </button>
@@ -172,11 +160,13 @@ const TopProducts = () => {
             ))}
           </tbody>
         </table>
-        {
-          cardDetails && (
-            <div
+      </div>
+
+      {/* ===== Product Details Modal ===== */}
+      {cardDetails && (
+        <div
           className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-          onClick={() => setCardDatails(null)}
+          onClick={() => setCardDetails(null)}
         >
           <div
             className="bg-white rounded-2xl shadow-2xl w-80 md:w-[28rem] p-6"
@@ -209,41 +199,21 @@ const TopProducts = () => {
 
               {cardDetails.rating && (
                 <span className="text-xs text-gray-500">
-                  ⭐ {cardDetails.rating.rate} / 5
-                  <span className="ml-1">({cardDetails.rating.count})</span>
+                  ⭐ {cardDetails.rating.rate} / 5 (
+                  {cardDetails.rating.count})
                 </span>
               )}
             </div>
 
             <button
-              onClick={() => setCardDatails(null)}
-              className="w-full mt-5 bg-red-600 hover:bg-red-700  text-white py-2 rounded-xl text-sm font-medium active:scale-95 transition-all duration-400"
+              onClick={() => setCardDetails(null)}
+              className="w-full mt-5 bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl text-sm font-medium active:scale-95 transition"
             >
               Close
             </button>
           </div>
         </div>
-          )
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-      </div>
-
+      )}
     </div>
   );
 };

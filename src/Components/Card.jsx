@@ -15,7 +15,7 @@ const Card = () => {
           <p className="text-sm opacity-90">Total Orders</p>
           <CiShoppingCart className="text-2xl" />
         </div>
-        <h1 className="text-3xl font-bold mb-1">1,234</h1>
+        <h1 className="text-3xl font-bold mb-1">1.234</h1>
         <p className="text-xs opacity-90">+15% from last month</p>
       </div>
 
@@ -35,7 +35,7 @@ const Card = () => {
           <p className="text-sm text-gray-700">Delivered Orders</p>
           <CiCircleCheck className="text-2xl text-green-600" />
         </div>
-        <h1 className="text-3xl font-bold mb-1">1,050</h1>
+        <h1 className="text-3xl font-bold mb-1">1.050</h1>
         <p className="text-xs text-gray-600">+15% from last month</p>
       </div>
 

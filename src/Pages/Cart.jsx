@@ -1,11 +1,13 @@
 import { useGlobal } from "../context/useGlobal";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const { state } = useGlobal();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center py-10">
-      <div className="w-full max-w-lg bg-white rounded-xl shadow-lg p-6">
+      <div className="w-full max-w-lg bg-white rounded-xl shadow-lg p-6 flex flex-col">
 
         <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
           🛒 Cart
@@ -17,7 +19,7 @@ const Cart = () => {
           </p>
         )}
 
-        <div className="space-y-4">
+        <div className="space-y-4 flex-1">
           {state.cart.map(item => (
             <div
               key={item.id}
@@ -43,6 +45,14 @@ const Cart = () => {
             </div>
           ))}
         </div>
+
+        {/* 🔙 Back Button */}
+        <button
+          onClick={() => navigate("/")}
+          className="mt-6 bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-700 transition active:scale-95"
+        >
+          ⬅ Back to Home
+        </button>
 
       </div>
     </div>
