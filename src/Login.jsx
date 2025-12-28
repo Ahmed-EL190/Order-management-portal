@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState,  } from "react";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   FacebookAuthProvider,
   signInWithPopup,
-  signOut,
+  
+  sendPasswordResetEmail // إضافة
 } from "firebase/auth";
 import { auth, db } from "./firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
@@ -13,6 +14,8 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false); // إضافة
+  const [resetEmail, setResetEmail] = useState(""); // إضافة
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -22,13 +25,25 @@ const Login = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   // ===============================
-  // Email Login / Register
+  // التحقق من صحة البريد الإلكتروني
+  // ===============================
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
+  // ===============================
+  // تسجيل الدخول / التسجيل بالبريد
   // ===============================
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!validateEmail(email)) {
+      return alert("Please enter a valid email address");
+    }
+
     if (isRegister) {
-      if (!firstName || !lastName) {
+      if (!firstName.trim() || !lastName.trim()) {
         return alert("Please enter your full name");
       }
 
@@ -36,10 +51,18 @@ const Login = () => {
         return alert("Emails do not match");
       }
 
+      if (!validateEmail(confirmEmail)) {
+        return alert("Please enter a valid confirmation email");
+      }
+
       if (password !== confirmPassword) {
         return alert("Passwords do not match");
       }
 
+      if (password.length < 6) {
+        return alert("Password must be at least 6 characters");
+      }
+    } else {
       if (password.length < 6) {
         return alert("Password must be at least 6 characters");
       }
@@ -57,25 +80,65 @@ const Login = () => {
 
         await setDoc(doc(db, "users", cred.user.uid), {
           uid: cred.user.uid,
-          firstName,
-          lastName,
-          email,
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          email: email.trim(),
           provider: "email",
           createdAt: Date.now(),
         });
 
-        alert("✅ Account created successfully. Please login.");
-
-        // ⛔ logout بعد التسجيل
-        await signOut(auth);
-
+        alert("✅ Account created successfully!");
+        
+        // ⛔ إزالة signOut - ابقاء المستخدم مسجل الدخول
+        // بعد التسجيل، يمكنك توجيه المستخدم لصفحة أخرى
+        // أو إبقائه في الصفحة الحالية
+        
+        // resetForm(); // اختياري: يمكنك إبقاء البيانات
+        
+        // انتقل للوضع تسجيل الدخول
         setIsRegister(false);
-        resetForm();
+        
+        // هنا يمكنك إضافة توجيه لصفحة أخرى
+        // navigate('/dashboard');
+
       } else {
-        // 🔐 Login فقط
         await signInWithEmailAndPassword(auth, email, password);
-        // ❌ مفيش navigate هنا
+        alert("✅ Login successful!");
+        // هنا يمكنك إضافة توجيه
+        // navigate('/dashboard');
       }
+    } catch (error) {
+      // رسائل خطأ أكثر وضوحاً
+      let errorMessage = error.message;
+      if (error.code === "auth/email-already-in-use") {
+        errorMessage = "This email is already registered";
+      } else if (error.code === "auth/user-not-found") {
+        errorMessage = "No account found with this email";
+      } else if (error.code === "auth/wrong-password") {
+        errorMessage = "Incorrect password";
+      } else if (error.code === "auth/too-many-requests") {
+        errorMessage = "Too many attempts. Try again later";
+      }
+      alert(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ===============================
+  // إعادة تعيين كلمة المرور
+  // ===============================
+  const handleResetPassword = async () => {
+    if (!validateEmail(resetEmail)) {
+      return alert("Please enter a valid email address");
+    }
+
+    setLoading(true);
+    try {
+      await sendPasswordResetEmail(auth, resetEmail);
+      alert("📧 Password reset email sent! Check your inbox.");
+      setShowResetPassword(false);
+      setResetEmail("");
     } catch (error) {
       alert(error.message);
     } finally {
@@ -93,7 +156,7 @@ const Login = () => {
   };
 
   // ===============================
-  // Save Social User
+  // حفظ بيانات مستخدم التواصل الاجتماعي
   // ===============================
   const saveUserIfNotExists = async (user, provider) => {
     const ref = doc(db, "users", user.uid);
@@ -103,7 +166,7 @@ const Login = () => {
       await setDoc(ref, {
         uid: user.uid,
         firstName: user.displayName?.split(" ")[0] || "",
-        lastName: user.displayName?.split(" ")[1] || "",
+        lastName: user.displayName?.split(" ").slice(1).join(" ") || "",
         email: user.email,
         photo: user.photoURL,
         provider,
@@ -113,7 +176,7 @@ const Login = () => {
   };
 
   // ===============================
-  // Google Login
+  // تسجيل الدخول بجوجل
   // ===============================
   const handleGoogleLogin = async () => {
     try {
@@ -121,14 +184,21 @@ const Login = () => {
       const result = await signInWithPopup(auth, provider);
 
       await saveUserIfNotExists(result.user, "google");
-      // ❌ مفيش navigate
+      alert("✅ Google login successful!");
+      // navigate('/dashboard');
     } catch (error) {
-      alert(error.message);
+      let errorMessage = error.message;
+      if (error.code === "auth/popup-closed-by-user") {
+        errorMessage = "Login popup was closed";
+      } else if (error.code === "auth/cancelled-popup-request") {
+        errorMessage = "Login request was cancelled";
+      }
+      alert(errorMessage);
     }
   };
 
   // ===============================
-  // Facebook Login
+  // تسجيل الدخول بفيسبوك
   // ===============================
   const handleFacebookLogin = async () => {
     try {
@@ -136,22 +206,62 @@ const Login = () => {
       const result = await signInWithPopup(auth, provider);
 
       await saveUserIfNotExists(result.user, "facebook");
-      // ❌ مفيش navigate
+      alert("✅ Facebook login successful!");
+      // navigate('/dashboard');
     } catch (error) {
-      alert(error.message);
+      let errorMessage = error.message;
+      if (error.code === "auth/account-exists-with-different-credential") {
+        errorMessage = "An account already exists with this email";
+      }
+      alert(errorMessage);
     }
   };
+
+  // ===============================
+  // عرض نافذة إعادة تعيين كلمة المرور
+  // ===============================
+  if (showResetPassword) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8">
+          <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+            Reset Password
+          </h2>
+          <div className="space-y-4">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="input"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+            />
+            <button
+              onClick={handleResetPassword}
+              disabled={loading}
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold"
+            >
+              {loading ? "Sending..." : "Send Reset Email"}
+            </button>
+            <button
+              onClick={() => setShowResetPassword(false)}
+              className="w-full border py-3 rounded-xl hover:bg-gray-100"
+            >
+              Back to Login
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8">
-
         <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">
           {isRegister ? "Create Account" : "Welcome Back"}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-3">
-
           {isRegister && (
             <>
               <input
@@ -209,15 +319,26 @@ const Login = () => {
           )}
 
           <button
+            type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold disabled:opacity-50"
           >
             {loading ? "Loading..." : isRegister ? "Create Account" : "Login"}
           </button>
         </form>
 
+        {/* رابط إعادة تعيين كلمة المرور */}
+        {!isRegister && (
+          <p
+            className="text-center text-sm text-blue-600 cursor-pointer mt-3 hover:underline"
+            onClick={() => setShowResetPassword(true)}
+          >
+            Forgot your password?
+          </p>
+        )}
+
         <p
-          className="text-center text-sm text-indigo-600 cursor-pointer mt-4"
+          className="text-center text-sm text-indigo-600 cursor-pointer mt-4 hover:underline"
           onClick={() => {
             setIsRegister(!isRegister);
             resetForm();
@@ -238,22 +359,26 @@ const Login = () => {
 
             <button
               onClick={handleGoogleLogin}
+              type="button"
               className="w-full flex items-center justify-center gap-3 border py-3 rounded-xl hover:bg-gray-100 mb-3"
             >
               <img
                 src="https://www.svgrepo.com/show/475656/google-color.svg"
                 className="w-5"
+                alt="Google"
               />
               Continue with Google
             </button>
 
             <button
               onClick={handleFacebookLogin}
+              type="button"
               className="w-full flex items-center justify-center gap-3 bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700"
             >
               <img
                 src="https://www.svgrepo.com/show/475647/facebook-color.svg"
                 className="w-5 bg-white rounded"
+                alt="Facebook"
               />
               Continue with Facebook
             </button>

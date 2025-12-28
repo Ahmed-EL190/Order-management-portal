@@ -30,26 +30,54 @@ const App = () => {
   }, []);
 
   if (loading) {
-    return <h2 className="text-center mt-10">Loading...</h2>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
   }
 
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        {/* 🏠 Home (Protected) */}
-        <Route path="/" element={<Home />} />
-
-        {/* 🔐 Login */}
+        {/* 🔐 Login - يجب أن يأتي أولاً */}
         <Route
           path="/login"
           element={user ? <Navigate to="/" replace /> : <Login />}
         />
 
+        {/* 🏠 Home (Protected) */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute user={user}>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+
         {/* 🛒 Cart (Protected) */}
-        <Route path="/cart" element={<Cart />} />
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute user={user}>
+              <Cart />
+            </ProtectedRoute>
+          }
+        />
 
         {/* 📦 Order Cart (Protected) */}
-        <Route path="/order-cart" element={<OrderCart />} />
+        <Route
+          path="/order-cart"
+          element={
+            <ProtectedRoute user={user}>
+              <OrderCart />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* 🚫 404 - Page Not Found */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </>
     )
   );
