@@ -37,14 +37,7 @@ const App = () => {
     createRoutesFromElements(
       <>
         {/* 🏠 Home (Protected) */}
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute user={user}>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/" element={<Home />} />
 
         {/* 🔐 Login */}
         <Route
@@ -53,24 +46,10 @@ const App = () => {
         />
 
         {/* 🛒 Cart (Protected) */}
-        <Route
-          path="/cart"
-          element={
-            <ProtectedRoute user={user}>
-              <Cart />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/cart" element={<Cart />} />
 
         {/* 📦 Order Cart (Protected) */}
-        <Route
-          path="/order-cart"
-          element={
-            <ProtectedRoute user={user}>
-              <OrderCart />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/order-cart" element={<OrderCart />} />
       </>
     )
   );
