@@ -6,7 +6,7 @@ import {
   FacebookAuthProvider,
   signInWithPopup,
   
-  sendPasswordResetEmail // إضافة
+  sendPasswordResetEmail 
 } from "firebase/auth";
 import { auth, db } from "./firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
@@ -14,8 +14,8 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showResetPassword, setShowResetPassword] = useState(false); // إضافة
-  const [resetEmail, setResetEmail] = useState(""); // إضافة
+  const [showResetPassword, setShowResetPassword] = useState(false); 
+  const [resetEmail, setResetEmail] = useState(""); 
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -24,17 +24,13 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // ===============================
-  // التحقق من صحة البريد الإلكتروني
-  // ===============================
+  
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 
-  // ===============================
-  // تسجيل الدخول / التسجيل بالبريد
-  // ===============================
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -89,26 +85,14 @@ const Login = () => {
 
         alert("✅ Account created successfully!");
         
-        // ⛔ إزالة signOut - ابقاء المستخدم مسجل الدخول
-        // بعد التسجيل، يمكنك توجيه المستخدم لصفحة أخرى
-        // أو إبقائه في الصفحة الحالية
         
-        // resetForm(); // اختياري: يمكنك إبقاء البيانات
-        
-        // انتقل للوضع تسجيل الدخول
-        setIsRegister(false);
-        
-        // هنا يمكنك إضافة توجيه لصفحة أخرى
-        // navigate('/dashboard');
-
       } else {
         await signInWithEmailAndPassword(auth, email, password);
         alert("✅ Login successful!");
-        // هنا يمكنك إضافة توجيه
-        // navigate('/dashboard');
+       
       }
     } catch (error) {
-      // رسائل خطأ أكثر وضوحاً
+    
       let errorMessage = error.message;
       if (error.code === "auth/email-already-in-use") {
         errorMessage = "This email is already registered";
@@ -125,9 +109,7 @@ const Login = () => {
     }
   };
 
-  // ===============================
-  // إعادة تعيين كلمة المرور
-  // ===============================
+ 
   const handleResetPassword = async () => {
     if (!validateEmail(resetEmail)) {
       return alert("Please enter a valid email address");
@@ -155,9 +137,7 @@ const Login = () => {
     setConfirmPassword("");
   };
 
-  // ===============================
-  // حفظ بيانات مستخدم التواصل الاجتماعي
-  // ===============================
+  
   const saveUserIfNotExists = async (user, provider) => {
     const ref = doc(db, "users", user.uid);
     const snap = await getDoc(ref);
@@ -175,9 +155,7 @@ const Login = () => {
     }
   };
 
-  // ===============================
-  // تسجيل الدخول بجوجل
-  // ===============================
+  
   const handleGoogleLogin = async () => {
     try {
       const provider = new GoogleAuthProvider();
@@ -197,9 +175,7 @@ const Login = () => {
     }
   };
 
-  // ===============================
-  // تسجيل الدخول بفيسبوك
-  // ===============================
+  
   const handleFacebookLogin = async () => {
     try {
       const provider = new FacebookAuthProvider();
@@ -217,9 +193,7 @@ const Login = () => {
     }
   };
 
-  // ===============================
-  // عرض نافذة إعادة تعيين كلمة المرور
-  // ===============================
+  
   if (showResetPassword) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -327,7 +301,7 @@ const Login = () => {
           </button>
         </form>
 
-        {/* رابط إعادة تعيين كلمة المرور */}
+      
         {!isRegister && (
           <p
             className="text-center text-sm text-blue-600 cursor-pointer mt-3 hover:underline"
