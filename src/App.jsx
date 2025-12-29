@@ -14,7 +14,6 @@ import Home from "./Pages/Home";
 import Login from "./Login";
 import Cart from "./Pages/Cart";
 import OrderCart from "./Pages/OrderCart";
-import ProtectedRoute from "./ProtectedRoute";
 import { GlobalProvider } from "./context/GlobalContext.jsx";
 
 const App = () => {
@@ -40,43 +39,16 @@ const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        {/* 🔐 Login - يجب أن يأتي أولاً */}
         <Route
           path="/login"
           element={user ? <Navigate to="/" replace /> : <Login />}
         />
 
-        {/* 🏠 Home (Protected) */}
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute user={user}>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/" element={<Home />} />
 
-        {/* 🛒 Cart (Protected) */}
-        <Route
-          path="/cart"
-          element={
-            <ProtectedRoute user={user}>
-              <Cart />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/cart" element={<Cart />} />
 
-        {/* 📦 Order Cart (Protected) */}
-        <Route
-          path="/order-cart"
-          element={
-            <ProtectedRoute user={user}>
-              <OrderCart />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* 🚫 404 - Page Not Found */}
+        <Route path="/order-cart" element={<OrderCart />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </>
     )
