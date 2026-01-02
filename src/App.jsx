@@ -40,7 +40,7 @@ const App = () => {
     createRoutesFromElements(
       <>
         <Route
-          path="/login/:id"
+          path="/login"
           element={user ? <Navigate to="/" replace /> : <Login />}
         />
 
