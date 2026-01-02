@@ -8,11 +8,38 @@ const Order = () => {
 
   const { state, dispatch } = useGlobal();
 
+  // ===== Fetch Products =====
   useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data));
+    const getProducts = async () => {
+      try {
+        const res = await fetch("https://fakestoreapi.com/products");
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch products");
+        }
+
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
+    getProducts();
   }, []);
+
+  const getProductForOrder = (orderId) => {
+    const productById = products.find(product => product.id === orderId);
+   
+    if (state.orders && state.orders.length > 0) {
+      const orderIndex = state.orders.findIndex(order => order.id === orderId);
+      if (orderIndex < products.length) {
+        return products[orderIndex];
+      }
+    }
+    
+    return productById || (products.length > 0 ? products[0] : null);
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -35,7 +62,7 @@ const Order = () => {
         </h1>
 
         <Link
-          to="/order-cart"
+          to="/order-cart/1"
           className="bg-blue-900 hover:bg-blue-800 transition text-white px-4 py-2 rounded-lg text-sm"
         >
           Order Cart
@@ -44,57 +71,66 @@ const Order = () => {
 
       {/* ===== Mobile View ===== */}
       <div className="space-y-4 md:hidden">
-        {state.orders.map((order) => (
-          <div key={order.id} className="border rounded-lg p-4 shadow-sm">
-            <div className="flex justify-between items-center mb-3">
-              <span className="font-semibold text-gray-700">
-                Order #{order.id}
-              </span>
-              <span
-                className={`${getStatusColor(
-                  order.status
-                )} text-white px-2 py-1 rounded-full text-xs`}
-              >
-                {order.status}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-4">
-              {products.length > 0 && (
-                <img
-                  src={products[1].image}
-                  alt=""
-                  className="h-16 w-16 object-contain cursor-pointer"
-                  onClick={() => setDetailsCard(products[1])}
-                />
-              )}
-
-              <div className="flex-1 text-sm text-gray-600">
-                <p>
-                  <b>Customer:</b> {order.customer}
-                </p>
-                <p>
-                  <b>Price:</b>{" "}
-                  <span className="text-green-600 font-bold">
-                    {order.price}
-                  </span>
-                </p>
+        {state.orders.map((order) => {
+          const product = getProductForOrder(order.id);
+          
+          return (
+            <div key={order.id} className="border rounded-lg p-4 shadow-sm">
+              <div className="flex justify-between items-center mb-3">
+                <span className="font-semibold text-gray-700">
+                  Order #{order.id}
+                </span>
+                <span
+                  className={`${getStatusColor(
+                    order.status
+                  )} text-white px-2 py-1 rounded-full text-xs`}
+                >
+                  {order.status}
+                </span>
               </div>
-            </div>
 
-            <button
-              onClick={() =>
-                dispatch({
-                  type: "ADD_ORDER_TO_CART",
-                  payload: order,
-                })
-              }
-              className="mt-4 w-full bg-red-900 hover:bg-red-800 active:scale-95 transition-all duration-200 text-white py-2 rounded-lg text-sm"
-            >
-              🛒 Add to order
-            </button>
-          </div>
-        ))}
+              <div className="flex items-center gap-4">
+                {product && (
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    className="h-16 w-16 object-contain cursor-pointer"
+                    onClick={() => setDetailsCard(product)}
+                  />
+                )}
+
+                <div className="flex-1 text-sm text-gray-600">
+                  <p>
+                    <b>Customer:</b> {order.customer}
+                  </p>
+                  <p>
+                    <b>Price:</b>{" "}
+                    <span className="text-green-600 font-bold">
+                      ${order.price}
+                    </span>
+                  </p>
+                  {product && (
+                    <p className="text-xs text-gray-500 truncate mt-1">
+                      {product.title}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <button
+                onClick={() =>
+                  dispatch({
+                    type: "ADD_ORDER_TO_CART",
+                    payload: order,
+                  })
+                }
+                className="mt-4 w-full bg-red-900 hover:bg-red-800 active:scale-95 transition-all duration-200 text-white py-2 rounded-lg text-sm"
+              >
+                🛒 Add to order
+              </button>
+            </div>
+          );
+        })}
       </div>
 
       {/* ===== Desktop / Tablet View ===== */}
@@ -111,51 +147,59 @@ const Order = () => {
         </thead>
 
         <tbody className="divide-y">
-          {state.orders.map((order) => (
-            <tr key={order.id} className="hover:bg-gray-50 transition">
-              <td className="py-3 font-medium">#{order.id}</td>
-              <td className="py-3">{order.customer}</td>
+          {state.orders.map((order) => {
+            const product = getProductForOrder(order.id);
+            
+            return (
+              <tr key={order.id} className="hover:bg-gray-50 transition">
+                <td className="py-3 font-medium">#{order.id}</td>
+                <td className="py-3">{order.customer}</td>
 
-              <td className="py-3">
-                {products.length > 0 && (
-                  <img
-                    src={products[1].image}
-                    alt=""
-                    className="h-16 w-16 object-contain mx-auto cursor-pointer"
-                    onClick={() => setDetailsCard(products[1])}
-                  />
-                )}
-              </td>
+                <td className="py-3">
+                  {product ? (
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      className="h-16 w-16 object-contain mx-auto cursor-pointer"
+                      onClick={() => setDetailsCard(product)}
+                    />
+                  ) : (
+                    <div className="h-16 w-16 bg-gray-200 flex items-center justify-center rounded mx-auto">
+                      <span className="text-xs text-gray-500">No Image</span>
+                    </div>
+                  )}
+                </td>
 
-              <td className="py-3 font-semibold text-green-600">
-                {order.price}
-              </td>
+                <td className="py-3 font-semibold text-green-600">
+                  ${order.price}
+                </td>
 
-              <td className="py-3">
-                <span
-                  className={`${getStatusColor(
-                    order.status
-                  )} text-white px-3 py-1 rounded-full text-xs`}
-                >
-                  {order.status}
-                </span>
-              </td>
+                <td className="py-3">
+                  <span
+                    className={`${getStatusColor(
+                      order.status
+                    )} text-white px-3 py-1 rounded-full text-xs`}
+                  >
+                    {order.status}
+                  </span>
+                </td>
 
-              <td className="py-3">
-                <button
-                  onClick={() =>
-                    dispatch({
-                      type: "ADD_ORDER_TO_CART",
-                      payload: order,
-                    })
-                  }
-                  className="bg-red-900 hover:bg-red-800 active:scale-95 transition-all duration-200 text-white px-4 py-1.5 rounded-full text-xs"
-                >
-                  🛒 Add to order
-                </button>
-              </td>
-            </tr>
-          ))}
+                <td className="py-3">
+                  <button
+                    onClick={() =>
+                      dispatch({
+                        type: "ADD_ORDER_TO_CART",
+                        payload: order,
+                      })
+                    }
+                    className="bg-red-900 hover:bg-red-800 active:scale-95 transition-all duration-200 text-white px-4 py-1.5 rounded-full text-xs"
+                  >
+                    🛒 Add to order
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
@@ -204,7 +248,7 @@ const Order = () => {
 
             <button
               onClick={() => setDetailsCard(null)}
-              className="w-full mt-5 bg-red-600 hover:bg-red-700  text-white py-2 rounded-xl text-sm font-medium active:scale-95 transition-all duration-400"
+              className="w-full mt-5 bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl text-sm font-medium active:scale-95 transition-all duration-400"
             >
               Close
             </button>

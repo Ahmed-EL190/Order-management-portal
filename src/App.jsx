@@ -40,15 +40,15 @@ const App = () => {
     createRoutesFromElements(
       <>
         <Route
-          path="/login"
+          path="/login/:id"
           element={user ? <Navigate to="/" replace /> : <Login />}
         />
 
         <Route path="/" element={<Home />} />
 
-        <Route path="/cart" element={<Cart />} />
+        <Route path="/cart/:id" element={<Cart />} />
 
-        <Route path="/order-cart" element={<OrderCart />} />
+        <Route path="/order-cart/:id" element={<OrderCart />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </>
     )

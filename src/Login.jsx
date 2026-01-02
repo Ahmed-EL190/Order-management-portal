@@ -16,7 +16,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false); 
   const [resetEmail, setResetEmail] = useState(""); 
-
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
