@@ -44,74 +44,107 @@ const Order = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case "Delivered":
-        return "bg-blue-600";
+        return "bg-blue-100 text-blue-700 border border-blue-200";
       case "Pending":
-        return "bg-green-600";
+        return "bg-green-100 text-green-700 border border-green-200";
       case "Failed":
-        return "bg-red-600";
+        return "bg-red-100 text-red-700 border border-red-200";
       default:
-        return "bg-gray-500";
+        return "bg-gray-100 text-gray-700 border border-gray-200";
     }
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md mx-4 md:mx-5 p-5">
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-3 mb-6">
-        <h1 className="text-xl md:text-2xl font-bold text-gray-800">
+    <div className="bg-white rounded-xl shadow-md mx-2 xs:mx-3 sm:mx-4 md:mx-5 p-4 xs:p-5 sm:p-6 my-6 xs:my-8 sm:my-10">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-3 xs:gap-4 mb-5 xs:mb-6">
+        <h1 className="text-lg xs:text-xl sm:text-2xl md:text-2xl lgl:text-3xl font-bold text-gray-800 text-center sm:text-left">
           Recent Orders
         </h1>
 
         <Link
           to="/order-cart/1"
-          className="bg-blue-900 hover:bg-blue-800 transition text-white px-4 py-2 rounded-lg text-sm"
+          className="bg-blue-900 hover:bg-blue-800 transition-all duration-200 text-white px-3 xs:px-4 py-1.5 xs:py-2 rounded-lg text-xs xs:text-sm w-full sm:w-auto text-center font-medium"
         >
           Order Cart
         </Link>
       </div>
 
-      {/* ===== Mobile View ===== */}
-      <div className="space-y-4 md:hidden">
+      {/* ===== Mobile View (up to 500px) ===== */}
+      <div className="space-y-3 xs:space-y-4 block sml:hidden">
         {state.orders.map((order) => {
           const product = getProductForOrder(order.id);
           
           return (
-            <div key={order.id} className="border rounded-lg p-4 shadow-sm">
+            <div key={order.id} className="border rounded-lg p-3 xs:p-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col">
               <div className="flex justify-between items-center mb-3">
-                <span className="font-semibold text-gray-700">
+                <span className="font-bold text-gray-800 text-sm xs:text-base">
                   Order #{order.id}
                 </span>
                 <span
                   className={`${getStatusColor(
                     order.status
-                  )} text-white px-2 py-1 rounded-full text-xs`}
+                  )} px-2 py-0.5 xs:px-3 xs:py-1 rounded-full text-[10px] xs:text-xs font-semibold`}
                 >
                   {order.status}
                 </span>
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-start gap-3 xs:gap-4 mb-3">
                 {product && (
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className="h-16 w-16 object-contain cursor-pointer"
-                    onClick={() => setDetailsCard(product)}
-                  />
+                  <div className="flex-shrink-0">
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      className="h-16 w-16 xs:h-20 xs:w-20 object-contain cursor-pointer bg-gray-50 p-1 rounded-lg"
+                      onClick={() => setDetailsCard(product)}
+                    />
+                  </div>
                 )}
 
-                <div className="flex-1 text-sm text-gray-600">
-                  <p>
-                    <b>Customer:</b> {order.customer}
-                  </p>
-                  <p>
-                    <b>Price:</b>{" "}
-                    <span className="text-green-600 font-bold">
-                      ${order.price}
-                    </span>
-                  </p>
+                <div className="flex-1 min-w-0">
+                  <div className="mb-2">
+                    <p className="text-sm xs:text-base text-gray-800 font-medium">
+                      {order.customer}
+                    </p>
+                    <p className="text-xs xs:text-sm text-gray-600">
+                      Customer
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-base xs:text-lg font-bold text-green-600">
+                          ${order.price}
+                        </span>
+                        <p className="text-xs text-gray-600">Price</p>
+                      </div>
+                      
+                      {product && product.rating && (
+                        <div className="text-right">
+                          <div className="flex items-center justify-end">
+                            <span className="text-yellow-500 text-xs mr-1">⭐</span>
+                            <span className="text-xs font-bold text-gray-800">
+                              {product.rating.rate}
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-gray-600 mt-0.5">Rating</p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {product && (
+                      <span className="text-[10px] xs:text-xs bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded inline-block">
+                        {product.category}
+                      </span>
+                    )}
+                  </div>
+                  
                   {product && (
-                    <p className="text-xs text-gray-500 truncate mt-1">
-                      {product.title}
+                    <p className="text-xs text-gray-500 truncate mt-2">
+                      {product.title.length > 40 
+                        ? `${product.title.substring(0, 40)}...` 
+                        : product.title}
                     </p>
                   )}
                 </div>
@@ -124,134 +157,533 @@ const Order = () => {
                     payload: order,
                   })
                 }
-                className="mt-4 w-full bg-red-900 hover:bg-red-800 active:scale-95 transition-all duration-200 text-white py-2 rounded-lg text-sm"
+                className="mt-3 w-full bg-red-900 hover:bg-red-800 active:scale-95 transition-all duration-200 text-white py-2 rounded-lg text-sm font-medium"
               >
-                🛒 Add to order
+                🛒 Add to Order
               </button>
             </div>
           );
         })}
       </div>
 
-      {/* ===== Desktop / Tablet View ===== */}
-      <table className="hidden md:table w-full text-sm text-center mt-6">
-        <thead className="bg-gray-100 text-gray-600 uppercase">
-          <tr>
-            <th className="py-3">Order ID</th>
-            <th className="py-3">Customer</th>
-            <th className="py-3">Product</th>
-            <th className="py-3">Price</th>
-            <th className="py-3">Status</th>
-            <th className="py-3">Action</th>
-          </tr>
-        </thead>
-
-        <tbody className="divide-y">
+      {/* ===== Small Tablet View (500px - 666px) ===== */}
+      <div className="hidden sml:block md:hidden">
+        <div className="grid grid-cols-2 gap-3 xs:gap-4">
           {state.orders.map((order) => {
             const product = getProductForOrder(order.id);
             
             return (
-              <tr key={order.id} className="hover:bg-gray-50 transition">
-                <td className="py-3 font-medium">#{order.id}</td>
-                <td className="py-3">{order.customer}</td>
-
-                <td className="py-3">
-                  {product ? (
-                    <img
-                      src={product.image}
-                      alt={product.title}
-                      className="h-16 w-16 object-contain mx-auto cursor-pointer"
-                      onClick={() => setDetailsCard(product)}
-                    />
-                  ) : (
-                    <div className="h-16 w-16 bg-gray-200 flex items-center justify-center rounded mx-auto">
-                      <span className="text-xs text-gray-500">No Image</span>
-                    </div>
-                  )}
-                </td>
-
-                <td className="py-3 font-semibold text-green-600">
-                  ${order.price}
-                </td>
-
-                <td className="py-3">
+              <div key={order.id} className="border rounded-lg p-3 xs:p-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="font-bold text-gray-800 text-sm">
+                    Order #{order.id}
+                  </span>
                   <span
                     className={`${getStatusColor(
                       order.status
-                    )} text-white px-3 py-1 rounded-full text-xs`}
+                    )} px-2 py-0.5 rounded-full text-[10px] font-semibold`}
                   >
                     {order.status}
                   </span>
-                </td>
+                </div>
 
-                <td className="py-3">
-                  <button
-                    onClick={() =>
-                      dispatch({
-                        type: "ADD_ORDER_TO_CART",
-                        payload: order,
-                      })
-                    }
-                    className="bg-red-900 hover:bg-red-800 active:scale-95 transition-all duration-200 text-white px-4 py-1.5 rounded-full text-xs"
-                  >
-                    🛒 Add to order
-                  </button>
-                </td>
-              </tr>
+                <div className="flex flex-col items-center mb-3">
+                  {product && (
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      className="h-20 w-20 object-contain cursor-pointer bg-gray-50 p-2 rounded-lg mb-2"
+                      onClick={() => setDetailsCard(product)}
+                    />
+                  )}
+                  
+                  <p className="text-sm font-medium text-gray-800 text-start items-start">
+                    {order.customer}
+                  </p>
+                  <p className="text-xs text-gray-600 text-start items-start mb-2">
+                    Customer
+                  </p>
+                </div>
+
+                <div className="space-y-3 mb-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-base font-bold text-green-600">
+                        ${order.price}
+                      </span>
+                      <p className="text-xs text-gray-600">Price</p>
+                    </div>
+                    
+                    {product && product.rating && (
+                      <div className="text-right">
+                        <div className="flex items-center justify-end">
+                          <span className="text-yellow-500 text-xs mr-1">⭐</span>
+                          <span className="text-xs font-bold text-gray-800">
+                            {product.rating.rate}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-gray-600 mt-0.5">Rating</p>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {product && (
+                    <span className="text-[10px] bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-center block">
+                      {product.category}
+                    </span>
+                  )}
+                  
+                  {product && (
+                    <p className="text-xs text-gray-500 text-center line-clamp-2 h-8">
+                      {product.title}
+                    </p>
+                  )}
+                </div>
+
+                <button
+                  onClick={() =>
+                    dispatch({
+                      type: "ADD_ORDER_TO_CART",
+                      payload: order,
+                    })
+                  }
+                  className="mt-auto w-full bg-red-900 hover:bg-red-800 active:scale-95 transition-all duration-200 text-white py-2 rounded-lg text-sm font-medium"
+                >
+                  🛒 Add to Order
+                </button>
+              </div>
             );
           })}
-        </tbody>
-      </table>
+        </div>
+      </div>
+
+      {/* ===== Tablet View (667px - 767px) ===== */}
+      <div className="hidden md:block mdl:hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs text-left">
+            <thead className="bg-gray-100 text-gray-600 uppercase">
+              <tr>
+                <th className="py-3 px-2 text-center">Order ID</th>
+                <th className="py-3 px-2 items-start">Customer</th>
+                <th className="py-3 px-2 text-center">Product</th>
+                <th className="py-3 px-2 text-center">Price</th>
+                <th className="py-3 px-2 text-center">Rating</th>
+                <th className="py-3 px-2 text-center">Status</th>
+                <th className="py-3 px-2 text-center">Action</th>
+              </tr>
+            </thead>
+
+            <tbody className="divide-y">
+              {state.orders.map((order) => {
+                const product = getProductForOrder(order.id);
+                
+                return (
+                  <tr key={order.id} className="hover:bg-gray-50 transition">
+                    <td className="py-3 px-2 font-bold text-center">
+                      #{order.id}
+                    </td>
+                    
+                    <td className="py-3 px-2">
+                      <div>
+                        <p className="font-medium text-gray-800 text-sm">
+                          {order.customer}
+                        </p>
+                        {product && (
+                          <p className="text-[10px] text-gray-500 truncate max-w-[80px]">
+                            {product.title}
+                          </p>
+                        )}
+                      </div>
+                    </td>
+
+                    <td className="py-3 px-2">
+                      {product ? (
+                        <div className="flex justify-center">
+                          <img
+                            src={product.image}
+                            alt={product.title}
+                            className="h-10 w-10 object-contain cursor-pointer bg-gray-50 p-1 rounded"
+                            onClick={() => setDetailsCard(product)}
+                          />
+                        </div>
+                      ) : (
+                        <div className="h-10 w-10 bg-gray-200 flex items-center justify-center rounded mx-auto">
+                          <span className="text-[10px] text-gray-500">No Image</span>
+                        </div>
+                      )}
+                    </td>
+
+                    <td className="py-3 px-2 font-bold text-green-600 text-sm text-center">
+                      ${order.price}
+                    </td>
+
+                    <td className="py-3 px-2 text-center">
+                      {product && product.rating ? (
+                        <div className="flex flex-col items-center">
+                          <div className="flex items-center">
+                            <span className="text-yellow-500 text-xs">⭐</span>
+                            <span className="text-xs font-bold text-gray-800 ml-0.5">
+                              {product.rating.rate}
+                            </span>
+                          </div>
+                          <span className="text-[10px] text-gray-500">
+                            ({product.rating.count})
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-gray-400">-</span>
+                      )}
+                    </td>
+
+                    <td className="py-3 px-2">
+                      <div className="flex justify-center">
+                        <span
+                          className={`${getStatusColor(
+                            order.status
+                          )} px-2 py-0.5 rounded-full text-[10px] font-semibold text-center min-w-[60px]`}
+                        >
+                          {order.status}
+                        </span>
+                      </div>
+                    </td>
+
+                    <td className="py-3 px-2">
+                      <div className="flex justify-center">
+                        <button
+                          onClick={() =>
+                            dispatch({
+                              type: "ADD_ORDER_TO_CART",
+                              payload: order,
+                            })
+                          }
+                          className="bg-red-900 hover:bg-red-800 active:scale-95 transition-all duration-200 text-white px-2 py-1 rounded text-[10px] font-medium"
+                        >
+                          🛒 Add
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ===== Medium Tablet View (768px - 1023px) ===== */}
+      <div className="hidden mdl:block lgl:hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-100 text-gray-600 uppercase">
+              <tr>
+                <th className="py-3 px-3 text-center">Order ID</th>
+                <th className="py-3 px-3">Customer</th>
+                <th className="py-3 px-3 text-center">Product</th>
+                <th className="py-3 px-3 text-center">Price</th>
+                <th className="py-3 px-3 text-center">Rating</th>
+                <th className="py-3 px-3 text-center">Status</th>
+                <th className="py-3 px-3 text-center">Action</th>
+              </tr>
+            </thead>
+
+            <tbody className="divide-y">
+              {state.orders.map((order) => {
+                const product = getProductForOrder(order.id);
+                
+                return (
+                  <tr key={order.id} className="hover:bg-gray-50 transition">
+                    <td className="py-3 px-3 font-bold text-center">
+                      #{order.id}
+                    </td>
+                    
+                    <td className="py-3 px-3">
+                      <div>
+                        <p className="font-medium text-gray-800">
+                          {order.customer}
+                        </p>
+                        {product && (
+                          <p className="text-xs text-gray-500 truncate max-w-[120px]">
+                            {product.title}
+                          </p>
+                        )}
+                      </div>
+                    </td>
+
+                    <td className="py-3 px-3">
+                      {product ? (
+                        <div className="flex justify-center">
+                          <img
+                            src={product.image}
+                            alt={product.title}
+                            className="h-12 w-12 object-contain cursor-pointer bg-gray-50 p-1 rounded"
+                            onClick={() => setDetailsCard(product)}
+                          />
+                        </div>
+                      ) : (
+                        <div className="h-12 w-12 bg-gray-200 flex items-center justify-center rounded mx-auto">
+                          <span className="text-xs text-gray-500">No Image</span>
+                        </div>
+                      )}
+                    </td>
+
+                    <td className="py-3 px-3 font-bold text-green-600 text-base text-center">
+                      ${order.price}
+                    </td>
+
+                    <td className="py-3 px-3 text-center">
+                      {product && product.rating ? (
+                        <div className="flex flex-col items-center">
+                          <div className="flex items-center">
+                            <span className="text-yellow-500 text-sm">⭐</span>
+                            <span className="text-sm font-bold text-gray-800 ml-1">
+                              {product.rating.rate}
+                            </span>
+                            <span className="text-xs text-gray-500 ml-1">/5</span>
+                          </div>
+                          <span className="text-xs text-gray-500">
+                            {product.rating.count} reviews
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-gray-400">-</span>
+                      )}
+                    </td>
+
+                    <td className="py-3 px-3">
+                      <div className="flex justify-center">
+                        <span
+                          className={`${getStatusColor(
+                            order.status
+                          )} px-3 py-1 rounded-full text-xs font-semibold text-center min-w-[80px]`}
+                        >
+                          {order.status}
+                        </span>
+                      </div>
+                    </td>
+
+                    <td className="py-3 px-3">
+                      <div className="flex justify-center">
+                        <button
+                          onClick={() =>
+                            dispatch({
+                              type: "ADD_ORDER_TO_CART",
+                              payload: order,
+                            })
+                          }
+                          className="bg-red-900 hover:bg-red-800 active:scale-95 transition-all duration-200 text-white px-3 py-1.5 rounded text-xs font-medium"
+                        >
+                          🛒 Add
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ===== Desktop View (1024px and above) ===== */}
+      <div className="hidden lgl:block">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm lgl:text-base">
+            <thead className="bg-gray-100 text-gray-600 uppercase">
+              <tr>
+                <th className="py-4 px-4 text-center">Order ID</th>
+                <th className="py-4 px-4 items-start text-start">Customer</th>
+                <th className="py-4 px-4 text-center">Product</th>
+                <th className="py-4 px-4 text-center">Price</th>
+                <th className="py-4 px-4 text-center">Rating</th>
+                <th className="py-4 px-4 text-center">Status</th>
+                <th className="py-4 px-4 text-center">Action</th>
+              </tr>
+            </thead>
+
+            <tbody className="divide-y">
+              {state.orders.map((order) => {
+                const product = getProductForOrder(order.id);
+                
+                return (
+                  <tr key={order.id} className="hover:bg-gray-50 transition group">
+                    <td className="py-4 px-4 font-bold text-center text-base">
+                      #{order.id}
+                    </td>
+                    
+                    <td className="py-4 px-4">
+                      <div>
+                        <p className="font-semibold text-gray-800 text-base">
+                          {order.customer}
+                        </p>
+                        {product && (
+                          <p className="text-sm text-gray-500 truncate max-w-[180px]">
+                            {product.title}
+                          </p>
+                        )}
+                      </div>
+                    </td>
+
+                    <td className="py-4 px-4">
+                      <div className="flex justify-center">
+                        {product ? (
+                          <img
+                            src={product.image}
+                            alt={product.title}
+                            className="h-16 w-16 object-contain cursor-pointer bg-gray-50 p-2 rounded-lg group-hover:scale-105 transition-transform duration-200"
+                            onClick={() => setDetailsCard(product)}
+                          />
+                        ) : (
+                          <div className="h-16 w-16 bg-gray-200 flex items-center justify-center rounded">
+                            <span className="text-sm text-gray-500">No Image</span>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+
+                    <td className="py-4 px-4 font-bold text-green-600 text-lg text-center">
+                      ${order.price}
+                    </td>
+
+                    <td className="py-4 px-4 text-center">
+                      {product && product.rating ? (
+                        <div className="flex flex-col items-center">
+                          <div className="flex items-center">
+                            <span className="text-yellow-500 text-base">⭐</span>
+                            <span className="text-base font-bold text-gray-800 ml-1">
+                              {product.rating.rate}
+                            </span>
+                            <span className="text-sm text-gray-500 ml-1">/5</span>
+                          </div>
+                          <span className="text-xs text-gray-500">
+                            {product.rating.count} reviews
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-gray-400">-</span>
+                      )}
+                    </td>
+
+                    <td className="py-4 px-4">
+                      <div className="flex justify-center">
+                        <span
+                          className={`${getStatusColor(
+                            order.status
+                          )} px-4 py-1.5 rounded-full text-sm font-semibold text-center min-w-[100px]`}
+                        >
+                          {order.status}
+                        </span>
+                      </div>
+                    </td>
+
+                    <td className="py-4 px-4">
+                      <div className="flex justify-center">
+                        <button
+                          onClick={() =>
+                            dispatch({
+                              type: "ADD_ORDER_TO_CART",
+                              payload: order,
+                            })
+                          }
+                          className="bg-red-900 hover:bg-red-800 active:scale-95 transition-all duration-200 text-white px-5 py-2 rounded-lg text-sm font-medium"
+                        >
+                          🛒 Add to Order
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {/* ===== Product Details Modal ===== */}
       {detailsCard && (
         <div
-          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-2 xs:p-3 sm:p-4"
           onClick={() => setDetailsCard(null)}
         >
           <div
-            className="bg-white rounded-2xl shadow-2xl w-80 md:w-[28rem] p-6"
+            className="bg-white rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl w-full max-w-[90vw] xs:max-w-xs sm:max-w-sm md:max-w-md p-4 xs:p-5 sm:p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="h-56 flex items-center justify-center mb-4">
+            <div className="h-48 xs:h-52 sm:h-56 flex items-center justify-center mb-4 xs:mb-5">
               <img
                 src={detailsCard.image}
                 alt={detailsCard.title}
-                className="h-full object-contain"
+                className="h-full object-contain p-2 bg-gray-50 rounded-lg"
               />
             </div>
 
-            <span className="text-[11px] uppercase tracking-wide bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
-              {detailsCard.category}
-            </span>
+            <div className="flex justify-center mb-3">
+              <span className="text-xs xs:text-sm uppercase tracking-wide bg-gray-100 text-gray-700 px-4 xs:px-5 py-2 xs:py-2.5 rounded-full font-bold">
+                {detailsCard.category}
+              </span>
+            </div>
 
-            <h2 className="text-sm font-bold text-gray-800 mt-3">
+            <h2 className="text-base xs:text-lg font-bold text-gray-800 text-center mb-3 leading-tight">
               {detailsCard.title}
             </h2>
 
-            <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+            <p className="text-xs xs:text-sm text-gray-600 text-justify leading-relaxed line-clamp-4 xs:line-clamp-5 mb-5">
               {detailsCard.description}
             </p>
 
-            <div className="flex justify-between items-center mt-4">
-              <span className="text-xl font-bold text-green-600">
-                ${detailsCard.price}
-              </span>
-
-              {detailsCard.rating && (
-                <span className="text-xs text-gray-500">
-                  ⭐ {detailsCard.rating.rate} / 5
-                  <span className="ml-1">({detailsCard.rating.count})</span>
-                </span>
-              )}
+            <div className="bg-gray-50 rounded-xl p-4 mb-5">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Price</p>
+                  <span className="text-2xl xs:text-3xl font-bold text-green-600">
+                    ${detailsCard.price}
+                  </span>
+                </div>
+                
+                {detailsCard.rating && (
+                  <div>
+                    <p className="text-xs text-gray-500 mb-1">Rating</p>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center bg-white px-3 py-1.5 rounded-lg shadow-sm">
+                        <span className="text-yellow-500 text-lg mr-1">⭐</span>
+                        <span className="text-lg font-bold text-gray-800">
+                          {detailsCard.rating.rate}
+                        </span>
+                        <span className="text-sm text-gray-500 ml-1">/5</span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {detailsCard.rating.count} reviews
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
 
-            <button
-              onClick={() => setDetailsCard(null)}
-              className="w-full mt-5 bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl text-sm font-medium active:scale-95 transition-all duration-400"
-            >
-              Close
-            </button>
+            <div className="flex flex-col xs:flex-row gap-3">
+              <button
+                onClick={() => setDetailsCard(null)}
+                className="flex-1 bg-gray-200 hover:bg-gray-300 active:scale-95 transition-all duration-200 text-gray-800 py-2.5 rounded-lg text-sm font-medium"
+              >
+                Close
+              </button>
+              
+              <button
+                onClick={() =>
+                  dispatch({
+                    type: "ADD_ORDER_TO_CART",
+                    payload: {
+                      id: detailsCard.id,
+                      customer: "Customer",
+                      price: detailsCard.price,
+                      status: "Pending"
+                    },
+                  })
+                }
+                className="flex-1 bg-blue-900 hover:bg-blue-800 active:scale-95 transition-all duration-200 text-white py-2.5 rounded-lg text-sm font-medium"
+              >
+                🛒 Add to Order
+              </button>
+            </div>
           </div>
         </div>
       )}
