@@ -1,43 +1,31 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import { useGlobal } from "../context/useGlobal";
 import { useEffect, useState } from "react";
 
 const Order = () => {
   const [products, setProducts] = useState([]);
-  const [detailsCard, setDetailsCard] = useState(null);
-
   const { state, dispatch } = useGlobal();
+
 
   // ===== Fetch Products =====
   useEffect(() => {
-    const getProducts = async () => {
-      try {
-        const res = await fetch("https://fakestoreapi.com/products");
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch products");
-        }
-
-        const data = await res.json();
-        setProducts(data);
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
-
-    getProducts();
+    fetch("https://fakestoreapi.com/products")
+      .then((res) => res.json())
+      .then((data) => setProducts(data));
   }, []);
 
   const getProductForOrder = (orderId) => {
-    const productById = products.find(product => product.id === orderId);
-   
+    const productById = products.find((product) => product.id === orderId);
+
     if (state.orders && state.orders.length > 0) {
-      const orderIndex = state.orders.findIndex(order => order.id === orderId);
+      const orderIndex = state.orders.findIndex(
+        (order) => order.id === orderId
+      );
       if (orderIndex < products.length) {
         return products[orderIndex];
       }
     }
-    
+
     return productById || (products.length > 0 ? products[0] : null);
   };
 
@@ -53,6 +41,7 @@ const Order = () => {
         return "bg-gray-100 text-gray-700 border border-gray-200";
     }
   };
+  const navigate = useNavigate();
 
   return (
     <div className="bg-white rounded-xl shadow-md mx-2 xs:mx-3 sm:mx-4 md:mx-5 p-4 xs:p-5 sm:p-6 my-6 xs:my-8 sm:my-10">
@@ -61,21 +50,19 @@ const Order = () => {
           Recent Orders
         </h1>
 
-        <Link
-          to="/order-cart/1"
-          className="bg-blue-900 hover:bg-blue-800 transition-all duration-200 text-white px-3 xs:px-4 py-1.5 xs:py-2 rounded-lg text-xs xs:text-sm w-full sm:w-auto text-center font-medium"
-        >
-          Order Cart
-        </Link>
+        
       </div>
 
       {/* ===== Mobile View (up to 500px) ===== */}
       <div className="space-y-3 xs:space-y-4 block sml:hidden">
         {state.orders.map((order) => {
           const product = getProductForOrder(order.id);
-          
+
           return (
-            <div key={order.id} className="border rounded-lg p-3 xs:p-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col">
+            <div
+              key={order.id}
+              className="border rounded-lg p-3 xs:p-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col"
+            >
               <div className="flex justify-between items-center mb-3">
                 <span className="font-bold text-gray-800 text-sm xs:text-base">
                   Order #{order.id}
@@ -92,12 +79,14 @@ const Order = () => {
               <div className="flex items-start gap-3 xs:gap-4 mb-3">
                 {product && (
                   <div className="flex-shrink-0">
-                    <img
-                      src={product.image}
-                      alt={product.title}
-                      className="h-16 w-16 xs:h-20 xs:w-20 object-contain cursor-pointer bg-gray-50 p-1 rounded-lg"
-                      onClick={() => setDetailsCard(product)}
-                    />
+                    <Link to={`/order-cart/${product.id}`}>
+                            <img
+                              src={product.image}
+                              alt={product.title}
+                              className="cursor-pointer w-16 h-16"
+                              onClick={() => navigate(`/order-cart/${product.id}`)}
+                            />
+                          </Link>
                   </div>
                 )}
 
@@ -106,44 +95,46 @@ const Order = () => {
                     <p className="text-sm xs:text-base text-gray-800 font-medium">
                       {order.customer}
                     </p>
-                    <p className="text-xs xs:text-sm text-gray-600">
-                      Customer
-                    </p>
+                    <p className="text-xs xs:text-sm text-gray-600">Customer</p>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <div>
                         <span className="text-base xs:text-lg font-bold text-green-600">
-                          ${order.price}
+                          {order.price}
                         </span>
                         <p className="text-xs text-gray-600">Price</p>
                       </div>
-                      
+
                       {product && product.rating && (
                         <div className="text-right">
                           <div className="flex items-center justify-end">
-                            <span className="text-yellow-500 text-xs mr-1">⭐</span>
+                            <span className="text-yellow-500 text-xs mr-1">
+                              ⭐
+                            </span>
                             <span className="text-xs font-bold text-gray-800">
                               {product.rating.rate}
                             </span>
                           </div>
-                          <p className="text-[10px] text-gray-600 mt-0.5">Rating</p>
+                          <p className="text-[10px] text-gray-600 mt-0.5">
+                            Rating
+                          </p>
                         </div>
                       )}
                     </div>
-                    
+
                     {product && (
                       <span className="text-[10px] xs:text-xs bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded inline-block">
                         {product.category}
                       </span>
                     )}
                   </div>
-                  
+
                   {product && (
                     <p className="text-xs text-gray-500 truncate mt-2">
-                      {product.title.length > 40 
-                        ? `${product.title.substring(0, 40)}...` 
+                      {product.title.length > 40
+                        ? `${product.title.substring(0, 40)}...`
                         : product.title}
                     </p>
                   )}
@@ -171,9 +162,12 @@ const Order = () => {
         <div className="grid grid-cols-2 gap-3 xs:gap-4">
           {state.orders.map((order) => {
             const product = getProductForOrder(order.id);
-            
+
             return (
-              <div key={order.id} className="border rounded-lg p-3 xs:p-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col">
+              <div
+                key={order.id}
+                className="border rounded-lg p-3 xs:p-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col"
+              >
                 <div className="flex justify-between items-center mb-3">
                   <span className="font-bold text-gray-800 text-sm">
                     Order #{order.id}
@@ -189,14 +183,16 @@ const Order = () => {
 
                 <div className="flex flex-col items-center mb-3">
                   {product && (
-                    <img
-                      src={product.image}
-                      alt={product.title}
-                      className="h-20 w-20 object-contain cursor-pointer bg-gray-50 p-2 rounded-lg mb-2"
-                      onClick={() => setDetailsCard(product)}
-                    />
+                    <Link to={`/order-cart/${product.id}`}>
+                            <img
+                              src={product.image}
+                              alt={product.title}
+                              className="cursor-pointer w-16 h-16"
+                              onClick={() => navigate(`/order-cart/${product.id}`)}
+                            />
+                          </Link>
                   )}
-                  
+
                   <p className="text-sm font-medium text-gray-800 text-start items-start">
                     {order.customer}
                   </p>
@@ -209,30 +205,34 @@ const Order = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-base font-bold text-green-600">
-                        ${order.price}
+                        {order.price}
                       </span>
                       <p className="text-xs text-gray-600">Price</p>
                     </div>
-                    
+
                     {product && product.rating && (
                       <div className="text-right">
                         <div className="flex items-center justify-end">
-                          <span className="text-yellow-500 text-xs mr-1">⭐</span>
+                          <span className="text-yellow-500 text-xs mr-1">
+                            ⭐
+                          </span>
                           <span className="text-xs font-bold text-gray-800">
                             {product.rating.rate}
                           </span>
                         </div>
-                        <p className="text-[10px] text-gray-600 mt-0.5">Rating</p>
+                        <p className="text-[10px] text-gray-600 mt-0.5">
+                          Rating
+                        </p>
                       </div>
                     )}
                   </div>
-                  
+
                   {product && (
                     <span className="text-[10px] bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-center block">
                       {product.category}
                     </span>
                   )}
-                  
+
                   {product && (
                     <p className="text-xs text-gray-500 text-center line-clamp-2 h-8">
                       {product.title}
@@ -276,13 +276,13 @@ const Order = () => {
             <tbody className="divide-y">
               {state.orders.map((order) => {
                 const product = getProductForOrder(order.id);
-                
+
                 return (
                   <tr key={order.id} className="hover:bg-gray-50 transition">
                     <td className="py-3 px-2 font-bold text-center">
                       #{order.id}
                     </td>
-                    
+
                     <td className="py-3 px-2">
                       <div>
                         <p className="font-medium text-gray-800 text-sm">
@@ -299,22 +299,26 @@ const Order = () => {
                     <td className="py-3 px-2">
                       {product ? (
                         <div className="flex justify-center">
-                          <img
-                            src={product.image}
-                            alt={product.title}
-                            className="h-10 w-10 object-contain cursor-pointer bg-gray-50 p-1 rounded"
-                            onClick={() => setDetailsCard(product)}
-                          />
+                          <Link to={`/order-cart/${product.id}`}>
+                            <img
+                              src={product.image}
+                              alt={product.title}
+                              className="cursor-pointer w-16 h-16"
+                              onClick={() => navigate(`/order-cart/${product.id}`)}
+                            />
+                          </Link>
                         </div>
                       ) : (
                         <div className="h-10 w-10 bg-gray-200 flex items-center justify-center rounded mx-auto">
-                          <span className="text-[10px] text-gray-500">No Image</span>
+                          <span className="text-[10px] text-gray-500">
+                            No Image
+                          </span>
                         </div>
                       )}
                     </td>
 
                     <td className="py-3 px-2 font-bold text-green-600 text-sm text-center">
-                      ${order.price}
+                      {order.price}
                     </td>
 
                     <td className="py-3 px-2 text-center">
@@ -389,13 +393,13 @@ const Order = () => {
             <tbody className="divide-y">
               {state.orders.map((order) => {
                 const product = getProductForOrder(order.id);
-                
+
                 return (
                   <tr key={order.id} className="hover:bg-gray-50 transition">
                     <td className="py-3 px-3 font-bold text-center">
                       #{order.id}
                     </td>
-                    
+
                     <td className="py-3 px-3">
                       <div>
                         <p className="font-medium text-gray-800">
@@ -412,22 +416,26 @@ const Order = () => {
                     <td className="py-3 px-3">
                       {product ? (
                         <div className="flex justify-center">
-                          <img
-                            src={product.image}
-                            alt={product.title}
-                            className="h-12 w-12 object-contain cursor-pointer bg-gray-50 p-1 rounded"
-                            onClick={() => setDetailsCard(product)}
-                          />
+                          <Link to={`/order-cart/${product.id}`}>
+                            <img
+                              src={product.image}
+                              alt={product.title}
+                              className="cursor-pointer w-16 h-16"
+                              onClick={() => navigate(`/order-cart/${product.id}`)}
+                            />
+                          </Link>
                         </div>
                       ) : (
                         <div className="h-12 w-12 bg-gray-200 flex items-center justify-center rounded mx-auto">
-                          <span className="text-xs text-gray-500">No Image</span>
+                          <span className="text-xs text-gray-500">
+                            No Image
+                          </span>
                         </div>
                       )}
                     </td>
 
                     <td className="py-3 px-3 font-bold text-green-600 text-base text-center">
-                      ${order.price}
+                      {order.price}
                     </td>
 
                     <td className="py-3 px-3 text-center">
@@ -438,7 +446,9 @@ const Order = () => {
                             <span className="text-sm font-bold text-gray-800 ml-1">
                               {product.rating.rate}
                             </span>
-                            <span className="text-xs text-gray-500 ml-1">/5</span>
+                            <span className="text-xs text-gray-500 ml-1">
+                              /5
+                            </span>
                           </div>
                           <span className="text-xs text-gray-500">
                             {product.rating.count} reviews
@@ -503,13 +513,16 @@ const Order = () => {
             <tbody className="divide-y">
               {state.orders.map((order) => {
                 const product = getProductForOrder(order.id);
-                
+
                 return (
-                  <tr key={order.id} className="hover:bg-gray-50 transition group">
+                  <tr
+                    key={order.id}
+                    className="hover:bg-gray-50 transition group"
+                  >
                     <td className="py-4 px-4 font-bold text-center text-base">
                       #{order.id}
                     </td>
-                    
+
                     <td className="py-4 px-4">
                       <div>
                         <p className="font-semibold text-gray-800 text-base">
@@ -526,33 +539,41 @@ const Order = () => {
                     <td className="py-4 px-4">
                       <div className="flex justify-center">
                         {product ? (
-                          <img
-                            src={product.image}
-                            alt={product.title}
-                            className="h-16 w-16 object-contain cursor-pointer bg-gray-50 p-2 rounded-lg group-hover:scale-105 transition-transform duration-200"
-                            onClick={() => setDetailsCard(product)}
-                          />
+                          <Link to={`/order-cart/${product.id}`}>
+                            <img
+                              src={product.image}
+                              alt={product.title}
+                              className="cursor-pointer w-16 h-16"
+                              onClick={() => navigate(`/order-cart/${product.id}`)}
+                            />
+                          </Link>
                         ) : (
                           <div className="h-16 w-16 bg-gray-200 flex items-center justify-center rounded">
-                            <span className="text-sm text-gray-500">No Image</span>
+                            <span className="text-sm text-gray-500">
+                              No Image
+                            </span>
                           </div>
                         )}
                       </div>
                     </td>
 
                     <td className="py-4 px-4 font-bold text-green-600 text-lg text-center">
-                      ${order.price}
+                      {order.price}
                     </td>
 
                     <td className="py-4 px-4 text-center">
                       {product && product.rating ? (
                         <div className="flex flex-col items-center">
                           <div className="flex items-center">
-                            <span className="text-yellow-500 text-base">⭐</span>
+                            <span className="text-yellow-500 text-base">
+                              ⭐
+                            </span>
                             <span className="text-base font-bold text-gray-800 ml-1">
                               {product.rating.rate}
                             </span>
-                            <span className="text-sm text-gray-500 ml-1">/5</span>
+                            <span className="text-sm text-gray-500 ml-1">
+                              /5
+                            </span>
                           </div>
                           <span className="text-xs text-gray-500">
                             {product.rating.count} reviews
@@ -597,96 +618,6 @@ const Order = () => {
           </table>
         </div>
       </div>
-
-      {/* ===== Product Details Modal ===== */}
-      {detailsCard && (
-        <div
-          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-2 xs:p-3 sm:p-4"
-          onClick={() => setDetailsCard(null)}
-        >
-          <div
-            className="bg-white rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl w-full max-w-[90vw] xs:max-w-xs sm:max-w-sm md:max-w-md p-4 xs:p-5 sm:p-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="h-48 xs:h-52 sm:h-56 flex items-center justify-center mb-4 xs:mb-5">
-              <img
-                src={detailsCard.image}
-                alt={detailsCard.title}
-                className="h-full object-contain p-2 bg-gray-50 rounded-lg"
-              />
-            </div>
-
-            <div className="flex justify-center mb-3">
-              <span className="text-xs xs:text-sm uppercase tracking-wide bg-gray-100 text-gray-700 px-4 xs:px-5 py-2 xs:py-2.5 rounded-full font-bold">
-                {detailsCard.category}
-              </span>
-            </div>
-
-            <h2 className="text-base xs:text-lg font-bold text-gray-800 text-center mb-3 leading-tight">
-              {detailsCard.title}
-            </h2>
-
-            <p className="text-xs xs:text-sm text-gray-600 text-justify leading-relaxed line-clamp-4 xs:line-clamp-5 mb-5">
-              {detailsCard.description}
-            </p>
-
-            <div className="bg-gray-50 rounded-xl p-4 mb-5">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Price</p>
-                  <span className="text-2xl xs:text-3xl font-bold text-green-600">
-                    ${detailsCard.price}
-                  </span>
-                </div>
-                
-                {detailsCard.rating && (
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">Rating</p>
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center bg-white px-3 py-1.5 rounded-lg shadow-sm">
-                        <span className="text-yellow-500 text-lg mr-1">⭐</span>
-                        <span className="text-lg font-bold text-gray-800">
-                          {detailsCard.rating.rate}
-                        </span>
-                        <span className="text-sm text-gray-500 ml-1">/5</span>
-                      </div>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {detailsCard.rating.count} reviews
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="flex flex-col xs:flex-row gap-3">
-              <button
-                onClick={() => setDetailsCard(null)}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 active:scale-95 transition-all duration-200 text-gray-800 py-2.5 rounded-lg text-sm font-medium"
-              >
-                Close
-              </button>
-              
-              <button
-                onClick={() =>
-                  dispatch({
-                    type: "ADD_ORDER_TO_CART",
-                    payload: {
-                      id: detailsCard.id,
-                      customer: "Customer",
-                      price: detailsCard.price,
-                      status: "Pending"
-                    },
-                  })
-                }
-                className="flex-1 bg-blue-900 hover:bg-blue-800 active:scale-95 transition-all duration-200 text-white py-2.5 rounded-lg text-sm font-medium"
-              >
-                🛒 Add to Order
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -1,69 +1,49 @@
-import { useGlobal } from "../context/useGlobal";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const OrderCart = () => {
-  const { state } = useGlobal();
-  const navigate = useNavigate();
+  const { id } = useParams(); // 👈 id من الرابط
+  const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    fetch(`https://fakestoreapi.com/products/${id}`)
+      .then((res) => res.json())
+      .then((data) => setProduct(data));
+  }, [id]);
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Delivered":
+        return "bg-blue-100 text-blue-700 border border-blue-200";
+      case "Pending":
+        return "bg-green-100 text-green-700 border border-green-200";
+      case "Failed":
+        return "bg-red-100 text-red-700 border border-red-200";
+      default:
+        return "bg-gray-100 text-gray-700 border border-gray-200";
+    }
+  };
+
+  if (!product) return <h2>Loading...</h2>;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center py-10">
-      <div className="w-full max-w-lg bg-white rounded-xl shadow-lg p-6 flex flex-col">
-
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-          📦 Order Cart
-        </h2>
-
-        {state.orderCart.length === 0 && (
-          <p className="text-center text-gray-500">
-            Cart is empty
-          </p>
-        )}
-
-        <div className="space-y-4 flex-1">
-          {state.orderCart.map(order => (
-            <div
-              key={order.id}
-              className="flex justify-between items-center border rounded-lg p-4 hover:bg-gray-50 transition"
-            >
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-500">
-                  Order ID
-                </span>
-                <span className="font-semibold text-gray-800">
-                  #{order.id}
-                </span>
-              </div>
-
-              <div className="flex flex-col text-center">
-                <span className="text-sm text-gray-500">
-                  Customer
-                </span>
-                <span className="font-medium text-gray-700">
-                  {order.customer}
-                </span>
-              </div>
-
-              <div className="flex flex-col items-end">
-                <span className="text-sm text-gray-500">
-                  Qty
-                </span>
-                <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm font-semibold">
-                  x {order.qty}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* 🔙 Back Button */}
-        <button
-          onClick={() => navigate("/")}
-          className="mt-6 bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-700 transition active:scale-95"
+    <div>
+      <div className="flex justify-between items-center mb-3">
+        <span className="font-bold text-gray-800 text-sm xs:text-base">
+          Order #{product.id}
+        </span>
+        <span
+          className={`${getStatusColor(
+            product.status
+          )} px-2 py-0.5 xs:px-3 xs:py-1 rounded-full text-[10px] xs:text-xs font-semibold`}
         >
-          ⬅ Back to Home
-        </button>
-
+          {product.status}
+        </span>
       </div>
+      <h2>{product.title}</h2>
+      <img src={product.image} alt={product.title} />
+      <p>{product.description}</p>
+      <h3>{product.price} $</h3>
+      <p>{product.category}</p>
     </div>
   );
 };
