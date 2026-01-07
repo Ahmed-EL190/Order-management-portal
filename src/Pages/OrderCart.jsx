@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const OrderCart = () => {
-  const { id } = useParams(); // 👈 id من الرابط
+  const { id } = useParams(); 
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
@@ -26,25 +26,55 @@ const OrderCart = () => {
   if (!product) return <h2>Loading...</h2>;
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-3">
-        <span className="font-bold text-gray-800 text-sm xs:text-base">
-          Order #{product.id}
-        </span>
-        <span
-          className={`${getStatusColor(
-            product.status
-          )} px-2 py-0.5 xs:px-3 xs:py-1 rounded-full text-[10px] xs:text-xs font-semibold`}
-        >
-          {product.status}
-        </span>
-      </div>
-      <h2>{product.title}</h2>
-      <img src={product.image} alt={product.title} />
-      <p>{product.description}</p>
-      <h3>{product.price} $</h3>
-      <p>{product.category}</p>
+    <div className="border border-gray-200 rounded-md p-4 lgl:p-5 xl:p-6 flex items-start gap-5 bg-white">
+  {/* Image */}
+  <div className="w-36 lgl:w-40 xl:w-44 flex-shrink-0 bg-gray-50 rounded-md flex items-center justify-center p-3">
+    <img
+      src={product.image}
+      alt={product.title}
+      className="h-28 lgl:h-32 xl:h-36 object-contain"
+    />
+  </div>
+
+  {/* Content */}
+  <div className="flex-1 flex flex-col gap-3">
+    {/* Header */}
+    <div className="flex justify-between items-center">
+      <span className="font-semibold text-gray-700 text-sm xl:text-base">
+        Order #{product.id}
+      </span>
+
+      <span
+        className={`${getStatusColor(
+          product.status
+        )} px-3 py-1 rounded-full text-xs xl:text-sm font-medium`}
+      >
+        {product.status}
+      </span>
     </div>
+
+    {/* Title */}
+    <h2 className="font-semibold text-gray-900 text-base xl:text-lg line-clamp-1">
+      {product.title}
+    </h2>
+
+    {/* Description */}
+    <p className="text-sm text-gray-600 line-clamp-2 xl:line-clamp-3">
+      {product.description}
+    </p>
+
+    {/* Footer */}
+    <div className="flex justify-between items-center pt-2 border-t border-gray-100">
+      <h3 className="font-bold text-green-600 text-base xl:text-lg">
+        {product.price} $
+      </h3>
+
+      <p className="text-sm text-gray-500 capitalize">
+        {product.category}
+      </p>
+    </div>
+  </div>
+</div>
   );
 };
 

@@ -1,6 +1,7 @@
 export const initialState = {
   cart: [],
   orderCart: [],
+  user: null,
   orders: [
     { id: "ORD001", customer: "Alice", stock: 150, price: "$250.00", status: "Delivered" },
     { id: "ORD002", customer: "Bob", stock: 75, price: "$120.50", status: "Pending" },
