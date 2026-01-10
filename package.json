@@ -13,7 +13,7 @@
     "bootstrap": "^5.3.8",
     "context": "^3.0.33",
     "firebase": "^12.7.0",
-    "formik": "^2.4.8",
+    "formik": "^2.4.9",
     "lucide-react": "^0.552.0",
     "react": "^19.1.1",
     "react-bootstrap": "^2.10.10",
